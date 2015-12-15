@@ -14,3 +14,13 @@ fi
 
 #force 256 colors
 alias tmux='tmux -2'
+
+export GOPATH=$HOME/Dropbox/12-coding/go
+path=(
+  $path
+    $HOME/.yadr/bin
+      $HOME/.yadr/bin/yadr
+        $GOPATH/bin
+
+)
+
