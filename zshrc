@@ -15,6 +15,9 @@ fi
 #force 256 colors
 alias tmux='tmux -2'
 
+export EDITOR=/usr/local/bin/vim
+export VISUAL=/usr/local/bin/vim
+
 export GOPATH=$HOME/Dropbox/12-coding/go
 path=(
   $path
