@@ -1,0 +1,18 @@
+" Right wrapping behavior for text like files
+au BufRead,BufNewFile *.txt,*.tex,*.md set wrap linebreak nolist textwidth=0 wrapmargin=0
+
+" Enable spell checker for text like files
+au BufRead *.txt,*.tex,*.md setlocal spell
+
+" GOLANG
+"
+" autorun goimports when saving
+let g:go_fmt_command = "goimports"
+
+
+" Vertical line at 80 char to follow PEP
+if exists('+colorcolumn')
+  set colorcolumn=80
+else
+  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif

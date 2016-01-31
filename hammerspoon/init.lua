@@ -2,6 +2,13 @@
 -- https://github.com/oschrenk/dotfiles/blob/master/.hammerspoon/init.lua 
 -- https://github.com/cmsj/hammerspoon-config
 
+
+-- Requirements
+-- Unsupported Spaces extension. Uses private APIs but works okay.
+-- (http://github.com/asmagill/hammerspoon_asm.undocumented)
+spaces = require("hs._asm.undocumented.spaces")
+require("hs.application")
+
 --------------------------
 -- Settings
 --------------------------
@@ -12,6 +19,7 @@ local wifiInterface = "en0"
 local wifiWatcher = nil
 local workSSIDToken = "ITU++"
 local homeSSIDToken = "autobahn_5GHz"
+local homeSSIDs = {"autobahn_5GHz","autobahn", "keinkabel02", "keinkabel01" }
 local lastSSID = hs.wifi.currentNetwork()
 local homeLocation = "Home"
 local workLocation = "Work"
@@ -28,8 +36,10 @@ local display_monitor = "DELL U2711"
 
 -- Define audio device names for headphone/speaker switching
 local headphoneDevice = "Headphones"
-local speakerDevice = "Scarlet 2i4 USB"
+local speakerDevice = "Scarlett 2i4 USB"
 
+-- How often to update Fan and Temp
+updateStatsInterval = 20
 
 -- disable animation
 hs.window.animationDuration = 0
@@ -44,6 +54,103 @@ local hyper = {"ctrl", "alt", "shift", "cmd"}
 local windowSizeCache = {}
 local spotifyWasPlaying = false
 local powerSource = hs.battery.powerSource()
+
+
+------------------------
+-- MenuBar
+------------------------
+
+-- Get output of a bash command
+function os.capture(cmd)
+  local f = assert(io.popen(cmd, 'r'))
+  local s = assert(f:read('*a'))
+  f:close()
+  s = string.gsub(s, '^%s+', '')
+  s = string.gsub(s, '%s+$', '')
+  s = string.gsub(s, '[\n\r]+', ' ')
+  return s
+end
+
+-- Reimplemented version of capture() because sometimes Lua
+-- fails with "interrupted system call" when using io.popen() on OS X
+-- This is ugly, don't use it! Better use hs.task
+function mCapture(cmd, raw)
+   local tmpfile = os.tmpname()
+   os.execute(cmd .. ">" .. tmpfile)
+   local f=io.open(tmpfile)
+   local s=f:read("*a")
+   f:close()
+   os.remove(tmpfile)
+   if raw then return s end
+   s = string.gsub(s, '^%s+', '')
+   s = string.gsub(s, '%s+$', '')
+   s = string.gsub(s, '[\n\r]+', ' ')
+   return s
+end
+
+function getMean(s)
+    local n, j
+    n = 0
+    j = 0
+    for i in string.gmatch(s, "%S+") do
+        j = j + 1
+        n = tonumber(i)+n
+    end
+    n = math.floor(n/j)
+    return tostring(n)
+end
+
+
+-- Update the fan and temp. Needs iStats CLI tool from homebrew.
+local function updateStats()
+  fanSpeed = mCapture("/usr/local/bin/istats fan speed | cut -c14- | sed 's/\\..*//'", false)
+  temp = mCapture("/usr/local/bin/istats cpu temp | cut -c11- | sed 's/\\..*//'", false)
+  fanSpeed = getMean(fanSpeed)
+end
+
+-- Makes (and updates) the topbar menu filled with the current Space, the
+-- temperature and the fan speed. The Space only updates if the space is changed
+-- with the Hammerspoon shortcut (option + arrows does not work). 
+local function makeStatsMenu(calledFromWhere)
+  if statsMenu == nil then
+    statsMenu = hs.menubar.new()
+  end
+  if calledFromWhere == "spaceChange" then
+    currentSpace = tostring(spaces.currentSpace()) 
+  else
+    updateStats()
+  end
+  -- statsMenu:setTitle("Space " .. currentSpace .. " | Fan: " .. fanSpeed .. " | Temp: " .. temp)
+  statsMenu:setTitle("".. currentSpace .. " | " .. fanSpeed .. " RPM | " .. temp .. "°C")
+end
+
+
+statsMenuTimer = hs.timer.new(updateStatsInterval, makeStatsMenu)
+statsMenuTimer:start()
+------------------------
+-- Spaces
+------------------------
+-- Gets a list of windows and iterates until the window title is non-empty.
+-- This avoids focusing the hidden windows apparently placed on top of all
+-- Google Chrome windows. It also checks if the empty title belongs to Chrome,
+-- because some apps don't give any of their windows a title, and should still
+-- be focused.
+local function spaceChange()
+  makeStatsMenu("spaceChange")
+  visibleWindows = hs.window.orderedWindows()
+  for i, window in ipairs(visibleWindows) do
+    if window:application():title() == "Google Chrome" then
+      if window:title() ~= "" then
+        window:focus()
+        break
+      end
+    else
+      window:focus()
+      break
+    end
+  end
+end
+
 
 ------------------------
 -- Window Managment
@@ -154,6 +261,72 @@ end)
 hs.hotkey.bind(hyper, "t", function()
     os.execute("/bin/rm -rf ~/.Trash/*")
 end)
+
+-- Spaces
+--------------------------------------------------------------------------------
+-- switch Spaces
+hs.hotkey.bind(hyper, '1', function()
+  spaces.moveToSpace("1")
+  spaceChange()
+end)
+hs.hotkey.bind(hyper, '2', function()
+  spaces.moveToSpace("2")
+  spaceChange()
+end)
+hs.hotkey.bind(hyper, '3', function()
+  spaces.moveToSpace("3")
+  spaceChange()
+end)
+hs.hotkey.bind(hyper, '4', function()
+  spaces.moveToSpace("4")
+  spaceChange()
+end)
+hs.hotkey.bind(hyper, '5', function()
+  spaces.moveToSpace("5")
+  spaceChange()
+end)
+hs.hotkey.bind(hyper, '6', function()
+  spaces.moveToSpace("6")
+  spaceChange()
+end)
+
+function moveWindowOneSpace(direction)
+   local mouseOrigin = hs.mouse.getAbsolutePosition()
+   local win = hs.window.focusedWindow()
+   local clickPoint = win:zoomButtonRect()
+
+   clickPoint.x = clickPoint.x + clickPoint.w + 5
+   clickPoint.y = clickPoint.y + (clickPoint.h / 2)
+
+   local mouseClickEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftmousedown, clickPoint)
+   mouseClickEvent:post()
+   hs.timer.usleep(150000)
+
+   local nextSpaceDownEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, true)
+   nextSpaceDownEvent:post()
+   hs.timer.usleep(150000)
+
+   local nextSpaceUpEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, false)
+   nextSpaceUpEvent:post()
+   hs.timer.usleep(150000)
+
+   local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, clickPoint)
+   mouseReleaseEvent:post()
+   hs.timer.usleep(150000)
+
+  hs.mouse.setAbsolutePosition(mouseOrigin)
+  spaceChange()
+end
+
+
+hk1 = hs.hotkey.bind(hyper, "n",
+             function() moveWindowOneSpace("right") end)
+hk2 = hs.hotkey.bind(hyper, "m",
+             function() moveWindowOneSpace("left") end)
+
+
+--------------------------------------------------------------------------------
+
 
 ------------------------
 -- Fast user switching
@@ -463,4 +636,7 @@ function reload_config(files)
 end
 
 hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload_config):start()
+currentSpace = tostring(spaces.currentSpace())
+updateStats()
+makeStatsMenu()
 hs.alert.show("Config loaded")
