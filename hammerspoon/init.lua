@@ -257,16 +257,17 @@ hs.hotkey.bind(hyper, "c", function()
   hs.timer.doAfter(0.3, clearNotifications)
 end)
 
+
 -- Clean trash
-hs.hotkey.bind(hyper, "t", function()
-    os.execute("/bin/rm -rf ~/.Trash/*")
-end)
+-- hs.hotkey.bind(hyper, "t", function()
+--    os.execute("/bin/rm -rf ~/.Trash/*")
+-- end)
 
 -- Spaces
 --------------------------------------------------------------------------------
 -- switch Spaces
 hs.hotkey.bind(hyper, '1', function()
-  spaces.moveToSpace("1")
+  spaces.changeToSpace("1", true)
   spaceChange()
 end)
 hs.hotkey.bind(hyper, '2', function()
