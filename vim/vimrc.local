@@ -54,6 +54,7 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+
 " toggle paste on/off
 " set pastetoggle=<F2>
 nnoremap <F2> :set invpaste paste?<CR>
