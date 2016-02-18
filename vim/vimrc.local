@@ -16,3 +16,46 @@ if exists('+colorcolumn')
 else
   au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 endif
+
+" LaTex
+" let g:vimtex_view_general_viewer= '/Applications/Skim.app/Contents/SharedSupport/displayline'
+" let g:vimtex_view_general_options = '@line @pdf @tex'
+let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
+let g:vimtex_view_general_options_latexmk = '-r 1'
+
+let g:vimtex_quickfix_ignored_warnings = [
+\ 'Underfull',
+\ 'Overfull',
+\ ]
+
+" enable neocomplete for latex
+if !exists('g:neocomplete#sources#omni#input_patterns')
+let g:neocomplete#sources#omni#input_patterns = {}
+endif
+let g:neocomplete#sources#omni#input_patterns.tex =
+	\ '\v\\%('
+	\ . '\a*%(ref|cite)\a*%(\s*\[[^]]*\])?\s*\{[^{}]*'
+	\ . '|includegraphics%(\s*\[[^]]*\])?\s*\{[^{}]*'
+	\ . '|%(include|input)\s*\{[^{}]*'
+	\ . ')'
+
+" Latex spell checking
+" disable in comments
+let g:tex_comment_nospell=1
+
+" Only latex, no plain tex for new files
+let g:tex_flavor='latex'
+
+
+" move faster between vim splits
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" toggle paste on/off
+" set pastetoggle=<F2>
+nnoremap <F2> :set invpaste paste?<CR>
+set pastetoggle=<F2>
+set showmode
