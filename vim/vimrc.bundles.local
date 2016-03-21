@@ -1,4 +1,9 @@
-Bundle 'fatih/vim-go'
-Bundle 'vim-airline/vim-airline-themes'
 Bundle 'lervag/vimtex'
 Bundle 'christoomey/vim-tmux-navigator'
+" Pick either python-mode or pyflakes & pydoc
+Bundle 'klen/python-mode'
+" Bundle 'fs111/pydoc.vim'
+Bundle 'yssource/python.vim'
+Bundle 'python_match.vim'
+Bundle 'pythoncomplete'
+Bundle 'chrisbra/Recover.vim'

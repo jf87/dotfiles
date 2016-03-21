@@ -47,6 +47,8 @@ let g:tex_comment_nospell=1
 " Only latex, no plain tex for new files
 let g:tex_flavor='latex'
 
+"don't conceal math environments etc
+let g:tex_conceal = ""
 
 " move faster between vim splits
 nnoremap <C-J> <C-W><C-J>
@@ -56,7 +58,41 @@ nnoremap <C-H> <C-W><C-H>
 
 
 " toggle paste on/off
-" set pastetoggle=<F2>
-nnoremap <F2> :set invpaste paste?<CR>
-set pastetoggle=<F2>
-set showmode
+set pastetoggle=<F2> " pastetoggle (sane indentation on pastes)
+
+"let g:syntastic_enable_signs = 0
+"let g:syntastic_enable_balloons = 0
+let g:syntastic_enable_highlighting = 0
+"let g:pymode_syntax = 0
+"let g:pymode_syntax_slow_sync = 1
+"let g:pymode_rope_lookup_project = 0
+"let g:pymode_rope_completion = 0
+"let g:pymode_rope_complete_on_dot = 0
+"let g:pymode_rope_autoimport = 0
+"let g:pymode_folding = 0
+let g:pymode_folding_nest_limit = 100 " this kills performance!
+
+
+"let g:syntastic_python_checkers = ['flake8']
+"let g:syntastic_python_flake8_args='--ignore=E501,E225'
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+"let g:syntastic_warning_symbol = 'WW'
+"let g:syntastic_error_symbol = 'EE'
+"let g:syntastic_style_error_symbol = 'SE'
+"let g:syntastic_style_warning_symbol = 'SW'
+
+"highlight SyntasticErrorLine guibg=#550000
+"highlight SyntasticWarningLine guibg=#331d1e
+
+
+let g:syntastic_quiet_messages = { "type": "style" }
+
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 1
+" let g:syntastic_python_flake8_args="--ignore=E501,W601"
+
