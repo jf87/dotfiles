@@ -8,6 +8,7 @@ if [ "$(uname)" == "Darwin"  ]; then
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     echo "linux"
     sudo apt-get install zsh
+    sudo apt-get install tmux
     sudo apt-get install vim-gnome
 fi
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
