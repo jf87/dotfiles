@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 if [ "$(uname)" == "Darwin"  ]; then
     brew update
     brew install zsh
@@ -12,11 +12,11 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     sudo apt-get install vim-gnome
 fi
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+chsh -s /bin/zsh
 setopt EXTENDED_GLOB
 for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
     ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
 done
-chsh -s /bin/zsh
 sh <(curl https://j.mp/spf13-vim3 -L)
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ln -s ~/dotfiles/tmux.conf ~/.tmux.conf

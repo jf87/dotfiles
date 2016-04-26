@@ -18,7 +18,7 @@ alias tmux='tmux -2'
 export EDITOR=/usr/local/bin/vim
 export VISUAL=/usr/local/bin/vim
 
-export GOPATH=$HOME/Dropbox/12-coding/go
+export GOPATH=$HOME/go
 path=(
   $path
     $HOME/.yadr/bin
