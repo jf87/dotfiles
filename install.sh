@@ -11,6 +11,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     sudo apt-get install tmux
     sudo apt-get install vim-gnome
 fi
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 chsh -s /bin/zsh
 setopt EXTENDED_GLOB
