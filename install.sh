@@ -10,9 +10,10 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     sudo apt-get install zsh
     sudo apt-get install tmux
     sudo apt-get install vim-gnome
+    git clone https://github.com/Anthony25/gnome-terminal-colors-solarized ~/gnome-terminal-colors-solarized
+    ~/gnome-terminal-colors-solarized/install.sh
 fi
 ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
-ln -s ~/dotfiles/ctags ~/ctags
 ln -s ~/dotfiles/zpreztorc ~/.zpreztorc
 ln -s ~/dotfiles/zshrc ~/.zshrc
 ln -s ~/dotfiles/ctags ~/ctags
