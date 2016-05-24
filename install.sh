@@ -19,9 +19,12 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     sudo apt-get install zsh
     sudo apt-get install tmux
     sudo apt-get install vim-gnome
+    git clone https://github.com/Anthony25/gnome-terminal-colors-solarized ~/gnome-terminal-colors-solarized
+    ~/gnome-terminal-colors-solarized/install.sh
 fi
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 chsh -s /bin/zsh
+exec zsh
 setopt EXTENDED_GLOB
 for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
     ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
