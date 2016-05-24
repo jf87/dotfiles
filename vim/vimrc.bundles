@@ -1,0 +1,212 @@
+" Modeline and Notes {
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+"
+"   based on spf13.com
+" }
+
+" Environment {
+
+    " Basics {
+        set nocompatible        " Must be first line
+        set background=dark     " Assume a dark background
+    " }
+
+
+    " Setup Bundle Support {
+        " The next three lines ensure that the ~/.vim/bundle/ system works
+        filetype off
+        set rtp+=~/.vim/bundle/vundle
+        call vundle#rc()
+    " }
+
+    " Add an UnBundle command {
+    function! UnBundle(arg, ...)
+      let bundle = vundle#config#init_bundle(a:arg, a:000)
+      call filter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
+    endfunction
+
+    com! -nargs=+         UnBundle
+    \ call UnBundle(<args>)
+    " }
+
+" }
+
+" Bundles {
+
+    " Deps {
+        Bundle 'gmarik/vundle'
+        Bundle 'MarcWeber/vim-addon-mw-utils'
+        Bundle 'tomtom/tlib_vim'
+        if executable('ag')
+            Bundle 'mileszs/ack.vim'
+            let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
+        elseif executable('ack-grep')
+            let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+            Bundle 'mileszs/ack.vim'
+        elseif executable('ack')
+            Bundle 'mileszs/ack.vim'
+        endif
+    " }
+
+    " General {
+            Bundle 'scrooloose/nerdtree'
+            Bundle 'altercation/vim-colors-solarized'
+            Bundle 'spf13/vim-colors'
+            Bundle 'tpope/vim-surround'
+            Bundle 'tpope/vim-repeat'
+            Bundle 'rhysd/conflict-marker.vim'
+            Bundle 'jiangmiao/auto-pairs'
+            Bundle 'ctrlpvim/ctrlp.vim'
+            Bundle 'tacahiroy/ctrlp-funky'
+            Bundle 'terryma/vim-multiple-cursors'
+            Bundle 'vim-scripts/sessionman.vim'
+            Bundle 'matchit.zip'
+            Bundle 'vim-airline/vim-airline'
+            Bundle 'vim-airline/vim-airline-themes'
+            Bundle 'powerline/fonts'
+            Bundle 'bling/vim-bufferline'
+            Bundle 'easymotion/vim-easymotion'
+            Bundle 'jistr/vim-nerdtree-tabs'
+            Bundle 'flazz/vim-colorschemes'
+            Bundle 'mbbill/undotree'
+            Bundle 'nathanaelkane/vim-indent-guides'
+            Bundle 'vim-scripts/restore_view.vim'
+            Bundle 'mhinz/vim-signify'
+            Bundle 'tpope/vim-abolish.git'
+            Bundle 'osyo-manga/vim-over'
+            Bundle 'kana/vim-textobj-user'
+            Bundle 'kana/vim-textobj-indent'
+            Bundle 'gcmt/wildfire.vim'
+    " }
+
+    " Writing {
+            Bundle 'reedes/vim-litecorrect'
+            Bundle 'reedes/vim-textobj-sentence'
+            Bundle 'reedes/vim-textobj-quote'
+            Bundle 'reedes/vim-wordy'
+    " }
+
+    " General Programming {
+            " Pick one of the checksyntax, jslint, or syntastic
+            Bundle 'scrooloose/syntastic'
+            Bundle 'tpope/vim-fugitive'
+            Bundle 'mattn/webapi-vim'
+            Bundle 'mattn/gist-vim'
+            Bundle 'scrooloose/nerdcommenter'
+            Bundle 'tpope/vim-commentary'
+            Bundle 'godlygeek/tabular'
+            Bundle 'luochen1990/rainbow'
+            if executable('ctags')
+                Bundle 'majutsushi/tagbar'
+            endif
+    " }
+
+    " Snippets & AutoComplete {
+            Bundle 'Shougo/neocomplete.vim.git'
+            Bundle 'Shougo/neosnippet'
+            Bundle 'Shougo/neosnippet-snippets'
+            Bundle 'honza/vim-snippets'
+    " }
+
+    " Python {
+            " Pick either python-mode or pyflakes & pydoc
+            Bundle 'klen/python-mode'
+            Bundle 'yssource/python.vim'
+            Bundle 'python_match.vim'
+            Bundle 'pythoncomplete'
+    " }
+
+    " Javascript {
+            Bundle 'elzr/vim-json'
+            Bundle 'groenewege/vim-less'
+            Bundle 'pangloss/vim-javascript'
+            Bundle 'briancollins/vim-jst'
+            Bundle 'kchmck/vim-coffee-script'
+    " }
+
+     "Scala {
+            "Bundle 'derekwyatt/vim-scala'
+            "Bundle 'derekwyatt/vim-sbt'
+            "Bundle 'xptemplate'
+     "}
+
+     "Haskell {
+        "if count(g:spf13_bundle_groups, 'haskell')
+            "Bundle 'travitch/hasksyn'
+            "Bundle 'dag/vim2hs'
+            "Bundle 'Twinside/vim-haskellConceal'
+            "Bundle 'Twinside/vim-haskellFold'
+            "Bundle 'lukerandall/haskellmode-vim'
+            "Bundle 'eagletmt/neco-ghc'
+            "Bundle 'eagletmt/ghcmod-vim'
+            "Bundle 'Shougo/vimproc.vim'
+            "Bundle 'adinapoli/cumino'
+            "Bundle 'bitc/vim-hdevtools'
+        "endif
+     "}
+
+    " HTML {
+            Bundle 'amirh/HTML-AutoCloseTag'
+            Bundle 'hail2u/vim-css3-syntax'
+            Bundle 'gorodinskiy/vim-coloresque'
+            Bundle 'tpope/vim-haml'
+            Bundle 'mattn/emmet-vim'
+    " }
+
+     "Ruby {
+        "if count(g:spf13_bundle_groups, 'ruby')
+            "Bundle 'tpope/vim-rails'
+            "let g:rubycomplete_buffer_loading = 1
+            "let g:rubycomplete_classes_in_global = 1
+            "let g:rubycomplete_rails = 1
+        "endif
+     "}
+
+     "Puppet {
+        "if count(g:spf13_bundle_groups, 'puppet')
+            "Bundle 'rodjek/vim-puppet'
+        "endif
+     "}
+
+    " Go Lang {
+            "Bundle 'Blackrush/vim-gocode'
+            Bundle 'fatih/vim-go'
+    " }
+
+     "Elixir {
+        "if count(g:spf13_bundle_groups, 'elixir')
+            "Bundle 'elixir-lang/vim-elixir'
+            "Bundle 'carlosgaldino/elixir-snippets'
+            "Bundle 'mattreduce/vim-mix'
+        "endif
+     "}
+
+    " Misc {
+            Bundle 'rust-lang/rust.vim'
+            Bundle 'tpope/vim-markdown'
+            Bundle 'spf13/vim-preview'
+            Bundle 'tpope/vim-cucumber'
+            Bundle 'cespare/vim-toml'
+            Bundle 'quentindecock/vim-cucumber-align-pipes'
+            Bundle 'saltstack/salt-vim'
+    " }
+
+    " Own {
+    "  
+        Bundle 'lervag/vimtex'
+        Bundle 'christoomey/vim-tmux-navigator'
+        " Pick either python-mode or pyflakes & pydoc
+        "Bundle 'klen/python-mode'
+        " Bundle 'fs111/pydoc.vim'
+        "Bundle 'yssource/python.vim'
+        "Bundle 'python_match.vim'
+        "Bundle 'pythoncomplete'
+        Bundle 'chrisbra/Recover.vim'
+        Bundle 'vimoutliner/vimoutliner'
+        "Bundle 'vimwiki/vimwiki.git'
+        "Bundle 'jceb/vim-orgmode'
+        Bundle 'tpope/vim-speeddating'
+    " }
+
+
+" }
