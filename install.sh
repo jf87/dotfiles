@@ -1,4 +1,13 @@
 #!/bin/bash
+ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
+ln -s ~/dotfiles/ctags ~/ctags
+ln -s ~/dotfiles/zpreztorc ~/.zpreztorc
+ln -s ~/dotfiles/zshrc ~/.zshrc
+ln -s ~/dotfiles/ctags ~/ctags
+ln -s ~/dotfiles/vim/gvimrc.local ~/.gvimrc.local
+ln -s ~/dotfiles/vim/vimrc.before.local ~/.vimrc.before.local
+ln -s ~/dotfiles/vim/vimrc.bundles.local ~/.vimrc.bundles.local
+ln -s ~/dotfiles/vim/vimrc.local ~/.vimrc.local
 if [ "$(uname)" == "Darwin"  ]; then
     brew update
     brew install zsh
@@ -13,15 +22,6 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     git clone https://github.com/Anthony25/gnome-terminal-colors-solarized ~/gnome-terminal-colors-solarized
     ~/gnome-terminal-colors-solarized/install.sh
 fi
-ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
-ln -s ~/dotfiles/zpreztorc ~/.zpreztorc
-ln -s ~/dotfiles/zshrc ~/.zshrc
-ln -s ~/dotfiles/ctags ~/ctags
-ln -s ~/dotfiles/vim/gvimrc.local ~/.gvimrc.local
-ln -s ~/dotfiles/vim/vimrc.before.local ~/.vimrc.before.local
-ln -s ~/dotfiles/vim/vimrc.bundles.local ~/.vimrc.bundles.local
-ln -s ~/dotfiles/vim/vimrc.local ~/.vimrc.local
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 chsh -s /bin/zsh
 exec zsh
