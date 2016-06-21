@@ -1,10 +1,8 @@
-"BUNDLES
 " Modeline and Notes {
 " vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
 "
 "   based on spf13.com
 " }
-
 " Identify platform {
     silent function! OSX()
         return has('macunix')
@@ -15,7 +13,7 @@
     silent function! WINDOWS()
         return  (has('win16') || has('win32') || has('win64'))
     endfunction
-" }
+
 " Environment {
 
     " Basics {
@@ -27,18 +25,10 @@
     " Setup Bundle Support {
         " The next three lines ensure that the ~/.vim/bundle/ system works
         filetype off
-        set rtp+=~/.vim/bundle/vundle
-        call vundle#rc()
-    " }
-
-    " Add an UnBundle command {
-    function! UnBundle(arg, ...)
-      let bundle = vundle#config#init_bundle(a:arg, a:000)
-      call filter(g:vundle#bundles, 'v:val["name_spec"] != "' . a:arg . '"')
-    endfunction
-
-    com! -nargs=+         UnBundle
-    \ call UnBundle(<args>)
+        set rtp+=~/.vim/bundle/Vundle.vim
+        call vundle#begin()
+        " let Vundle manage Vundle, required
+        Plugin 'VundleVim/Vundle.vim'
     " }
 
 " }
@@ -46,7 +36,6 @@
 " Bundles {
 
     " Deps {
-        Bundle 'gmarik/vundle'
         Bundle 'MarcWeber/vim-addon-mw-utils'
         Bundle 'tomtom/tlib_vim'
         if executable('ag')
@@ -118,6 +107,9 @@
             "Bundle 'Shougo/neosnippet'
             "Bundle 'Shougo/neosnippet-snippets'
             "Bundle 'honza/vim-snippets'
+            Plugin 'SirVer/ultisnips'
+            " Snippets are separated from the engine. Add this if you want them:
+            Plugin 'honza/vim-snippets'
             Bundle 'Shougo/deoplete.nvim'
     " }
 
@@ -137,27 +129,6 @@
             "Bundle 'kchmck/vim-coffee-script'
     " }
 
-     "Scala {
-            "Bundle 'derekwyatt/vim-scala'
-            "Bundle 'derekwyatt/vim-sbt'
-            "Bundle 'xptemplate'
-     "}
-
-     "Haskell {
-        "if count(g:spf13_bundle_groups, 'haskell')
-            "Bundle 'travitch/hasksyn'
-            "Bundle 'dag/vim2hs'
-            "Bundle 'Twinside/vim-haskellConceal'
-            "Bundle 'Twinside/vim-haskellFold'
-            "Bundle 'lukerandall/haskellmode-vim'
-            "Bundle 'eagletmt/neco-ghc'
-            "Bundle 'eagletmt/ghcmod-vim'
-            "Bundle 'Shougo/vimproc.vim'
-            "Bundle 'adinapoli/cumino'
-            "Bundle 'bitc/vim-hdevtools'
-        "endif
-     "}
-
     " HTML {
             "Bundle 'amirh/HTML-AutoCloseTag'
             "Bundle 'hail2u/vim-css3-syntax'
@@ -165,36 +136,11 @@
             "Bundle 'tpope/vim-haml'
             "Bundle 'mattn/emmet-vim'
     " }
-
-     "Ruby {
-        "if count(g:spf13_bundle_groups, 'ruby')
-            "Bundle 'tpope/vim-rails'
-            "let g:rubycomplete_buffer_loading = 1
-            "let g:rubycomplete_classes_in_global = 1
-            "let g:rubycomplete_rails = 1
-        "endif
-     "}
-
-     "Puppet {
-        "if count(g:spf13_bundle_groups, 'puppet')
-            "Bundle 'rodjek/vim-puppet'
-        "endif
-     "}
-
     " Go Lang {
             "Bundle 'Blackrush/vim-gocode'
             Bundle 'fatih/vim-go'
             Bundle 'zchee/deoplete-go'
     " }
-
-     "Elixir {
-        "if count(g:spf13_bundle_groups, 'elixir')
-            "Bundle 'elixir-lang/vim-elixir'
-            "Bundle 'carlosgaldino/elixir-snippets'
-            "Bundle 'mattreduce/vim-mix'
-        "endif
-     "}
-
     " Misc {
             "Bundle 'rust-lang/rust.vim'
             Bundle 'tpope/vim-markdown'
@@ -203,27 +149,29 @@
             Bundle 'cespare/vim-toml'
             Bundle 'quentindecock/vim-cucumber-align-pipes'
             Bundle 'saltstack/salt-vim'
+            Bundle 'lervag/vimtex'
+            Bundle 'christoomey/vim-tmux-navigator'
+            Bundle 'chrisbra/Recover.vim'
+            Bundle 'vimoutliner/vimoutliner'
+            Plugin 'amperser/proselint', {'rtp': 'plugins/vim/syntastic_proselint/'}
+            "Plugin 'amperser/proselint', {'rtp': 'plugins/vim/'}
+            "Bundle 'vimwiki/vimwiki.git'
+            "Bundle 'jceb/vim-orgmode'
+            "Bundle 'tpope/vim-speeddating'
     " }
-
-    " Own {
-    "  
-        Bundle 'lervag/vimtex'
-        Bundle 'christoomey/vim-tmux-navigator'
-        " Pick either python-mode or pyflakes & pydoc
-        "Bundle 'klen/python-mode'
-        " Bundle 'fs111/pydoc.vim'
-        "Bundle 'yssource/python.vim'
-        "Bundle 'python_match.vim'
-        "Bundle 'pythoncomplete'
-        Bundle 'chrisbra/Recover.vim'
-        Bundle 'vimoutliner/vimoutliner'
-        "Bundle 'vimwiki/vimwiki.git'
-        "Bundle 'jceb/vim-orgmode'
-        "Bundle 'tpope/vim-speeddating'
-    " }
-
-
+    " All of your Plugins must be added before the following line
+    call vundle#end()            " required
+    filetype plugin indent on    " required
+    " To ignore plugin indent changes, instead use:
+    "filetype plugin on
+    "
+    " Brief help
+    " :PluginList       - lists configured plugins
+    " :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+    " :PluginSearch foo - searches for foo; append `!` to refresh local cache
+    " :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
 " }
+
 
 " General {
 
@@ -475,7 +423,28 @@
             let g:pymode_trim_whitespaces = 0
             let g:pymode_options = 0
             let g:pymode_rope = 0
+            let g:pymode_lint = 0
+            "let g:pymode_syntax = 0
+            "let g:pymode_syntax_slow_sync = 1
+            "let g:pymode_rope_lookup_project = 0
+            "let g:pymode_rope_completion = 0
+            "let g:pymode_rope_complete_on_dot = 0
+            "let g:pymode_rope_autoimport = 0
+            "let g:pymode_folding = 0
+            let g:pymode_folding_nest_limit = 100 " this kills performance!
         endif
+    " }
+
+    " ultisnippets {
+    "
+        " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+        "let g:UltiSnipsExpandTrigger="<tab>"
+        "let g:UltiSnipsJumpForwardTrigger="<c-b>"
+        "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+        inoremap <silent><expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+        let g:UltiSnipsExpandTrigger="<tab>"
+        let g:UltiSnipsJumpForwardTrigger="<tab>"
+        let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     " }
 
     " deoplete.{
@@ -485,6 +454,14 @@
         let g:deoplete#auto_complete_delay = 50
         " Use smartcase (consider capitalized, lower case in matching)
         let g:deoplete#enable_smart_case = 1
+        " other way
+        " disable autocomplete
+        "let g:deoplete#disable_auto_complete = 1
+        if has("gui_running")
+            inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
+        else
+            inoremap <silent><expr><C-@> deoplete#mappings#manual_complete()
+        endif
         " Uncomment to diable autocompletion
         " disable automatic completion
         "let g:deoplete#disable_auto_complete = 1
@@ -571,6 +548,7 @@
 
         " See `:echo g:airline_theme_map` for some more choices
         " Default in terminal vim is 'dark'
+        let g:airline_powerline_fonts=1
         if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
             if !exists('g:airline_theme')
                 let g:airline_theme = 'solarized'
@@ -605,7 +583,159 @@
     endif
 
 " }
+
+
+    " stuff to sort
+    " {
+        " Right wrapping behavior for text like files
+        au BufRead,BufNewFile *.txt,*.tex,*.md set wrap linebreak nolist textwidth=0 wrapmargin=0
+
+        " Enable spell checker for text like files
+        au BufRead *.txt,*.tex,*.md setlocal spell
+        " Vertical line at 80 char to follow PEP
+        if exists('+colorcolumn')
+          set colorcolumn=80
+        else
+          au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+        endif
+        " move faster between vim splits
+        nnoremap <C-J> <C-W><C-J>
+        nnoremap <C-K> <C-W><C-K>
+        nnoremap <C-L> <C-W><C-L>
+        nnoremap <C-H> <C-W><C-H>
+
+        " Speed up highlighting
+        set nocursorcolumn
+        set nocursorline
+        set norelativenumber
+        " color to col 128
+        set synmaxcol=128
+        syntax sync minlines=256
+        " Yank in vim/tmux combination
+        set clipboard=unnamed
+    " }
+
+
+    " GOLANG
+    " {
+        " autorun goimports when saving
+        let g:go_fmt_command = "goimports"
+    " }
+
+
+    " LaTex
+    " {
+    "   " syntastic settings for latex
+        "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['tex'] }
+        "let g:syntastic_tex_checkers = ['chktex', 'lacheck', 'proselint']
+        let g:syntastic_tex_checkers = ['chktex', 'proselint']
+        let g:vimtex_latexmk_continuous = 1
+        let g:vimtex_latexmk_progname = 'nvr'
+        let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+        let g:vimtex_view_general_options = '-r @line @pdf @tex'
+        let g:vimtex_view_general_options_latexmk = '-r 1'
+
+        let g:vimtex_quickfix_ignored_warnings = [
+        \ 'Underfull',
+        \ 'Overfull',
+        \ ]
+
+        " enable deoplete for latex
+        if !exists('g:deoplete#omni_patterns')
+          let g:deoplete#omni_patterns = {}
+        endif
+
+        let g:deoplete#omni_patterns.tex =
+            \ '\v\\%('
+            \ . '\a*cite\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|\a*ref%(\s*\{[^}]*|range\s*\{[^,}]*%(}\{)?)'
+            \ . '|hyperref\s*\[[^]]*'
+            \ . '|includegraphics\*?%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|%(include%(only)?|input)\s*\{[^}]*'
+            \ . '|\a*(gls|Gls|GLS)(pl)?\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|includepdf%(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ . '|includestandalone%(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ . ')\m'
+
+        " This adds a callback hook that updates Skim after compilation
+        "let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
+
+        function! UpdateSkim(status)
+          if !a:status | return | endif
+
+          let l:out = b:vimtex.out()
+          let l:cmd = [g:vimtex_view_general_viewer, '-r']
+          if !empty(system('pgrep Skim'))
+            call extend(l:cmd, ['-g'])
+          endif
+          if has('nvim')
+            call jobstart(l:cmd + [line('.'), l:out])
+          elseif has('job')
+            call job_start(l:cmd + [line('.'), l:out])
+          else
+            call system(join(l:cmd + [line('.'), shellescape(l:out)], ' '))
+          endif
+        endfunction
+        " Latex spell checking
+        " disable in comments
+        let g:tex_comment_nospell=1
+
+        " never use plain tex for new files
+        let g:tex_flavor='latex'
+
+        "don't conceal math environments etc
+        let g:tex_conceal = ""
+    " }
+    
+    " Python
+    " {
+        "let g:syntastic_python_checkers = ['flake8']
+        "let g:syntastic_python_flake8_args='--ignore=E501,E225'
+    " }
+    
+    " Syntasic
+    " {
+        let g:syntastic_always_populate_loc_list = 0
+        let g:syntastic_auto_loc_list = 1
+        let g:syntastic_check_on_open = 1
+        let g:syntastic_check_on_wq = 0
+
+
+        "let g:syntastic_enable_signs = 0
+        "let g:syntastic_enable_balloons = 0
+        "let g:syntastic_enable_highlighting = 0
+        "let g:syntastic_warning_symbol = 'WW'
+        "let g:syntastic_error_symbol = 'EE'
+        "let g:syntastic_style_error_symbol = 'SE'
+        "let g:syntastic_style_warning_symbol = 'SW'
+
+        "highlight SyntasticErrorLine guibg=#550000
+        "highlight SyntasticWarningLine guibg=#331d1e
+
+
+        "let g:syntastic_quiet_messages = { "type": "style" }
+
+        "let g:syntastic_quiet_messages = { 'regex': 'SC2148' }
+        autocmd BufNewFile,BufRead *.tex let g:syntastic_quiet_messages = { "regex": 'Command terminated with space\|too-many-instance-attributes' }
+        "let g:syntastic_always_populate_loc_list = 1
+        "let g:syntastic_auto_loc_list = 1
+        "let g:syntastic_check_on_open = 1
+        "let g:syntastic_check_on_wq = 1
+    " }
+
+    " Statusline
+    " {
+        set statusline+=%#warningmsg#
+        set statusline+=%{SyntasticStatuslineFlag()}
+        set statusline+=%*
+    " }
+
+
+" }
+
+
 " Functions {
+
 
     " Initialize directories {
     function! InitializeDirectories()
@@ -688,114 +818,4 @@
     command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
     " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
     " }
-
-
-    " own stuff, to sort
-
-    " Right wrapping behavior for text like files
-    au BufRead,BufNewFile *.txt,*.tex,*.md set wrap linebreak nolist textwidth=0 wrapmargin=0
-
-    " Enable spell checker for text like files
-    au BufRead *.txt,*.tex,*.md setlocal spell
-
-    " GOLANG
-    "
-    " autorun goimports when saving
-    let g:go_fmt_command = "goimports"
-
-
-    " Vertical line at 80 char to follow PEP
-    if exists('+colorcolumn')
-      set colorcolumn=80
-    else
-      au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-    endif
-
-    " LaTex
-    " let g:vimtex_view_general_viewer= '/Applications/Skim.app/Contents/SharedSupport/displayline'
-    " let g:vimtex_view_general_options = '@line @pdf @tex'
-    let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-    let g:vimtex_view_general_options = '-r @line @pdf @tex'
-    let g:vimtex_view_general_options_latexmk = '-r 1'
-
-    let g:vimtex_quickfix_ignored_warnings = [
-    \ 'Underfull',
-    \ 'Overfull',
-    \ ]
-
-    " enable neocomplete for latex
-    "if !exists('g:neocomplete#sources#omni#input_patterns')
-    "let g:neocomplete#sources#omni#input_patterns = {}
-    "endif
-    "let g:neocomplete#sources#omni#input_patterns.tex =
-        "\ '\v\\%('
-        "\ . '\a*%(ref|cite)\a*%(\s*\[[^]]*\])?\s*\{[^{}]*'
-        "\ . '|includegraphics%(\s*\[[^]]*\])?\s*\{[^{}]*'
-        "\ . '|%(include|input)\s*\{[^{}]*'
-        "\ . ')'
-
-    " Latex spell checking
-    " disable in comments
-    let g:tex_comment_nospell=1
-
-    " Only latex, no plain tex for new files
-    let g:tex_flavor='latex'
-
-    "don't conceal math environments etc
-    let g:tex_conceal = ""
-
-    " move faster between vim splits
-    nnoremap <C-J> <C-W><C-J>
-    nnoremap <C-K> <C-W><C-K>
-    nnoremap <C-L> <C-W><C-L>
-    nnoremap <C-H> <C-W><C-H>
-
-    " Speed up highlighting
-    set nocursorcolumn
-    set nocursorline
-    set norelativenumber
-    " color to col 128
-    set synmaxcol=128
-    syntax sync minlines=256
-
-
-    "let g:syntastic_enable_signs = 0
-    "let g:syntastic_enable_balloons = 0
-        "let g:syntastic_enable_highlighting = 0
-    "let g:pymode_syntax = 0
-    "let g:pymode_syntax_slow_sync = 1
-    "let g:pymode_rope_lookup_project = 0
-    "let g:pymode_rope_completion = 0
-    "let g:pymode_rope_complete_on_dot = 0
-    "let g:pymode_rope_autoimport = 0
-    "let g:pymode_folding = 0
-    let g:pymode_folding_nest_limit = 100 " this kills performance!
-    "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['tex'] }
-
-    "let g:syntastic_python_checkers = ['flake8']
-    "let g:syntastic_python_flake8_args='--ignore=E501,E225'
-    "set statusline+=%#warningmsg#
-    "set statusline+=%{SyntasticStatuslineFlag()}
-    "set statusline+=%*
-
-    "let g:syntastic_warning_symbol = 'WW'
-    "let g:syntastic_error_symbol = 'EE'
-    "let g:syntastic_style_error_symbol = 'SE'
-    "let g:syntastic_style_warning_symbol = 'SW'
-
-    "highlight SyntasticErrorLine guibg=#550000
-    "highlight SyntasticWarningLine guibg=#331d1e
-
-
-    let g:syntastic_quiet_messages = { "type": "style" }
-
-    "let g:syntastic_always_populate_loc_list = 1
-    "let g:syntastic_auto_loc_list = 1
-    "let g:syntastic_check_on_open = 1
-    "let g:syntastic_check_on_wq = 1
-    " let g:syntastic_python_flake8_args="--ignore=E501,W601"
-
-    " Yank in vim/tmux combination
-    set clipboard=unnamed
-" }
 " }

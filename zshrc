@@ -26,4 +26,8 @@ path=(
         $GOPATH/bin
 
 )
-
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+alias emacs='emacs -nw'
+#alias vim='nvim'
+alias nvimtex='NVIM_LISTEN_ADDRESS=/tmp/nvim_tex.sock nvim'

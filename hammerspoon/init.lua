@@ -31,8 +31,9 @@ local personalUserId = "502"
 local workUserId     = "503"
 
 -- Define monitor names for layout purposes
-local display_laptop = "Built-in Retina Display"
-local display_monitor = "DELL U2711"
+local display_laptop = "Color LCD"
+local display_monitor1 = "DELL U2711"
+local display_monitor2 = "2460"
 
 -- Define audio device names for headphone/speaker switching
 local headphoneDevice = "Headphones"
@@ -127,6 +128,164 @@ end
 
 statsMenuTimer = hs.timer.new(updateStatsInterval, makeStatsMenu)
 statsMenuTimer:start()
+
+------------------------------------------------------------------------------
+-- ChangeResolution
+------------------------------------------------------------------------------
+-- Modal hotkey to change a monitors resolution
+-- Also includes basic menu bar item, which is dynamically generated
+-- You do have to set the resolutions you want manually, and if
+-- you have multiple computers, you'll have to apply the layouts
+-- appropriately
+--
+-- [ ] should make this it's own extension/file
+-- [ ] check the menu bar item corresponding to current res
+------------------------------------------------------------------------------
+--
+--
+
+function getScreens()
+	screens = hs.screen.allScreens()
+	return screens
+end
+
+
+-- possible resolutions for 15 MBPr
+local laptopResolutions = {
+  {w = 1440, h = 900, s = 2},
+  {w = 1680, h = 1050, s = 2},
+  {w = 1920, h = 1200, s = 2},
+  {w = 2048, h = 1280, s = 1},
+  {w = 2560, h = 1600, s = 1},
+  {w = 2880, h = 1800, s = 1}
+}
+
+-- possible resolutions for 4k Dell monitor
+local desktopResolutions = {
+  -- first 1920 is for retina resolution @ 30hz
+  -- might not be neede as 2048 looks pretty good
+  {w = 1920, h = 1080, s = 2},
+  -- this 1920 is for non-retina @ 60hz
+  {w = 1920, h = 1080, s = 1},
+  {w = 2048, h = 1152, s = 2},
+  {w = 2304, h = 1296, s = 2},
+  {w = 2560, h = 1440, s = 2}
+}
+
+-- initialize variable to ultimately store the correct set of resolutions
+local resolutions = {}
+local choices = {}
+local dropdownOptions = {}
+
+-- find out which set we need
+if hs.host.localizedName() == "iMac" then
+  resolutions = desktopResolutions
+elseif hs.host.localizedName() == "MacBook Pro" then
+  resolutions = laptopResolutions
+else
+  print('no resolutions available for this computer/monitor')
+  print(hs.host.localizedName())
+end
+
+-- configure the modal hotkeys
+-- has some entered/exit options, mainly to show/hide available options on
+-- entry/exit
+function setupResModal()
+  k = hs.hotkey.modal.new('cmd-alt-ctrl', 'l')
+  k:bind('', 'escape', function() hs.alert.closeAll() k:exit() end)
+
+  -- choices table is for storing the widths to display with hs.alert later
+  -- this is necessary because possible resolutions vary based on display
+  for i = 1, #resolutions do
+    -- inserts resolutions width in to choices table so we can iterate through them easily later
+    table.insert(choices, resolutions[i].w)
+    -- also creates a table to pass to init our dropdown menu with menuitem title and callback (this is fucking ugly)
+    table.insert(dropdownOptions, {title = tostring(i) .. ": " .. tostring(choices[i]), fn = function() return processKey(i) end, checked = false })
+    k:bind({}, tostring(i), function () processKey(i) end)
+  end
+
+  -- function to display the choices as an alert
+  -- called on hotkey modal entry
+  function displayChoices()
+    for i = 1, #choices do
+      hs.alert(tostring(i) .. ": " .. choices[i], 99)
+    end
+  end
+
+  -- on modal entry, display choices
+  function k:entered() displayChoices() end
+  -- on model exit, clear all alerts
+  function k:exited() hs.alert.closeAll() end
+
+end
+
+-- processes the key from modal binding
+-- resolution array is also passed so we can grab the corresponding resolution
+-- then calls changeRes function with hte values we want to change to
+function processKey(i)
+  -- would be cool to check the menu bar option that is currently selected,
+  -- but it seems like a bit of a pain in the ass, because I think I'd have to reinitialize
+  -- all the menubar items, since I'd have to change check to false for current,
+  -- and true for new selection
+  local res = resolutions[tonumber(i)]
+
+  hs.alert("Setting resolution to: " .. res.w .. " x " .. res.h, 5)
+  changeRes(res.w, res.h, res.s)
+
+  setResolutionDisplay(res.w)
+
+  k:exit()
+end
+
+-- desktop resolutions in form {w, h, scale} to be passed to setMode
+function changeRes(w, h, s)
+	local screens = getScreens()
+	for k,v in pairs(screens) do
+		if v:name() == display_laptop then
+			v:setMode(w, h, s)
+		end
+		print(k,v)
+	end
+	--hs.screen.primaryScreen():setMode(w, h, s)
+end
+
+setupResModal()
+
+-- Initializes a menubar item that displays the current resolution of display
+-- And when clicked, toggles between two most commonly used resolutions
+local resolutionMenu = hs.menubar.new()
+
+-- sets title to be displayed in menubar (really doesn't have to be own func?)
+function setResolutionDisplay(w)
+  resolutionMenu:setTitle(tostring(w))
+  resolutionMenu:setMenu(dropdownOptions)
+end
+
+-- When clicked, toggles through two most common resolutions by passing
+-- key manually to process key function
+
+-- this is kind of flawed because logic only works on desktop
+-- where it toggles between gaming mode and non-gaming mode
+-- maybe just make it a dropdown?
+function resolutionClicked()
+  local screen = hs.screen.primaryScreen()
+  if screen:currentMode().w == 1920 then
+    processKey("3")
+  else
+    processKey("1")
+  end
+end
+
+-- sets callback and calls settitle function
+if resolutionMenu then
+  -- resolutionMenu:setClickCallback(resolutionClicked)
+  local currentRes = hs.screen.primaryScreen():currentMode().w
+  setResolutionDisplay(currentRes)
+end
+
+
+
+
 ------------------------
 -- Spaces
 ------------------------
@@ -213,7 +372,7 @@ hs.hotkey.bind(hyper, "p", function()
 end)
 
 -- Send Window Next Monitor
-hs.hotkey.bind(hyper, "n", function()
+hs.hotkey.bind(hyper, "o", function()
   if (#hs.screen.allScreens() > 1) then
     local win = hs.window.focusedWindow()
     local nextScreen = win:screen():next()
@@ -257,13 +416,40 @@ hs.hotkey.bind(hyper, "c", function()
   hs.timer.doAfter(0.3, clearNotifications)
 end)
 
+hs.hotkey.bind(hyper, "q", function ()
+  focusScreen(hs.window.focusedWindow():screen():previous())
+end)
+
+--Predicate that checks if a window belongs to a screen
+function isInScreen(screen, win)
+  return win:screen() == screen
+end
+
+function focusScreen(screen)
+  --Get windows within screen, ordered from front to back.
+  --If no windows exist, bring focus to desktop. Otherwise, set focus on
+  --front-most application window.
+  local windows = hs.fnutils.filter(
+      hs.window.orderedWindows(),
+      hs.fnutils.partial(isInScreen, screen))
+  local windowToFocus = #windows > 0 and windows[1] or hs.window.desktop()
+  windowToFocus:focus()
+
+  -- Move mouse to center of screen
+  local pt = hs.geometry.rectMidPoint(screen:fullFrame())
+  hs.mouse.setAbsolutePosition(pt)
+  hs.eventtap.leftClick(pt)
+
+end
+
+
 
 -- Clean trash
 -- hs.hotkey.bind(hyper, "t", function()
 --    os.execute("/bin/rm -rf ~/.Trash/*")
 -- end)
 
--- Spaces
+-- Spaces FIXME this does not work with multiple screens
 --------------------------------------------------------------------------------
 -- switch Spaces
 hs.hotkey.bind(hyper, '1', function()
@@ -320,9 +506,9 @@ function moveWindowOneSpace(direction)
 end
 
 
-hk1 = hs.hotkey.bind(hyper, "n",
+hk1 = hs.hotkey.bind(hyper, "m",
              function() moveWindowOneSpace("right") end)
-hk2 = hs.hotkey.bind(hyper, "m",
+hk2 = hs.hotkey.bind(hyper, "n",
              function() moveWindowOneSpace("left") end)
 
 
@@ -573,28 +759,28 @@ end
 
 hs.battery.watcher.new(powerChanged):start()
 
--- Replace Caffeine.app with 18 lines of Lua :D
-local caffeine = hs.menubar.new()
+ --Replace Caffeine.app with 18 lines of Lua :D
+--local caffeine = hs.menubar.new()
 
-function setCaffeineDisplay(state)
-    local result
-    if state then
-        result = caffeine:setIcon("caffeine-on.pdf")
-    else
-        result = caffeine:setIcon("caffeine-off.pdf")
-    end
-end
+--function setCaffeineDisplay(state)
+	--local result
+	--if state then
+		--result = caffeine:setIcon("caffeine-on.pdf")
+	--else
+		--result = caffeine:setIcon("caffeine-off.pdf")
+	--end
+--end
 
-function caffeineClicked()
-    setCaffeineDisplay(hs.caffeinate.toggle("displayIdle"))
-end
+--function caffeineClicked()
+	--setCaffeineDisplay(hs.caffeinate.toggle("displayIdle"))
+--end
 
-if caffeine then
-    caffeine:setClickCallback(caffeineClicked)
-    setCaffeineDisplay(hs.caffeinate.get("displayIdle"))
-end
+--if caffeine then
+	--caffeine:setClickCallback(caffeineClicked)
+	--setCaffeineDisplay(hs.caffeinate.get("displayIdle"))
+--end
 
-hs.hotkey.bind(hyper, 'c', caffeineClicked)
+--hs.hotkey.bind(hyper, 'c', caffeineClicked)
 
 
 ------------------------
