@@ -85,6 +85,7 @@
             Bundle 'reedes/vim-textobj-sentence'
             Bundle 'reedes/vim-textobj-quote'
             Bundle 'reedes/vim-wordy'
+            Plugin 'beloglazov/vim-online-thesaurus'
     " }
 
     " General Programming {
@@ -656,6 +657,10 @@
             \ . '|includepdf%(\s*\[[^]]*\])?\s*\{[^}]*'
             \ . '|includestandalone%(\s*\[[^]]*\])?\s*\{[^}]*'
             \ . ')\m'
+        " use leader d to look up in mac os dictionary
+        nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
+        "hi SpellBad cterm=underline ctermfg=red
+        hi SpellBad cterm=underline,bold ctermfg=white ctermbg=red
 
         " This adds a callback hook that updates Skim after compilation
         "let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
