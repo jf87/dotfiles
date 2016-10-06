@@ -35,6 +35,9 @@ done
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 vim +BundleInstall! +BundleClean +q
-pip3 install neovim
-pip3 install --upgrade neovim
+sudo pip3 install neovim
+sudo pip3 install --upgrade neovim
+mkdir ~/.config
+ln -s ~/.vim ~/.config/nvim
+ln -s ~/.vimrc ~/.config/nvim/init.vim
 nvim +UpdateRemotePlugins +q
