@@ -178,7 +178,7 @@
 
     set virtualedit=onemore             " Allow for cursor beyond last character
     set history=1000                    " Store a ton of history (default is 20)
-    set spell                           " Spell checking on
+    " set spell                           " Spell checking on
     set iskeyword-=.                    " '.' is an end of word designator
     set iskeyword-=#                    " '#' is an end of word designator
     set iskeyword-=-                    " '-' is an end of word designator
@@ -593,6 +593,8 @@
 
         " Enable spell checker for text like files
         au BufRead *.txt,*.tex,*.md setlocal spell
+        "hi SpellBad cterm=underline ctermfg=red
+        au BufRead *.txt,*.tex,*.md hi SpellBad cterm=underline,bold ctermfg=white ctermbg=red
         " Vertical line at 80 char to follow PEP
         if exists('+colorcolumn')
           set colorcolumn=80
@@ -659,8 +661,6 @@
             \ . ')\m'
         " use leader d to look up in mac os dictionary
         nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
-        "hi SpellBad cterm=underline ctermfg=red
-        hi SpellBad cterm=underline,bold ctermfg=white ctermbg=red
 
         " This adds a callback hook that updates Skim after compilation
         "let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
