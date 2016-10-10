@@ -616,6 +616,10 @@
         syntax sync minlines=256
         " Yank in vim/tmux combination
         set clipboard=unnamed
+
+        " fix tmux neovim pane switching issue
+        " https://github.com/neovim/neovim/issues/2048#issuecomment-78045837
+        nnoremap <silent> <BS> :TmuxNavigateLeft<cr>
     " }
 
 
@@ -628,15 +632,41 @@
 
     " LaTex
     " {
+        " Mac OS
+        if OSX()
+            let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+            let g:vimtex_view_general_options = '-r @line @pdf @tex'
+            let g:vimtex_view_general_options_latexmk = '-r 1'
+            function! UpdateSkim(status)
+              if !a:status | return | endif
+
+              let l:out = b:vimtex.out()
+              let l:cmd = [g:vimtex_view_general_viewer, '-r']
+              if !empty(system('pgrep Skim'))
+                call extend(l:cmd, ['-g'])
+              endif
+              if has('nvim')
+                call jobstart(l:cmd + [line('.'), l:out])
+              elseif has('job')
+                call job_start(l:cmd + [line('.'), l:out])
+              else
+                call system(join(l:cmd + [line('.'), shellescape(l:out)], ' '))
+              endif
+            endfunction
+        " Linux
+        elseif LINUX()
+            let g:vimtex_view_general_viewer = 'okular'
+            let g:vimtex_view_general_options = '--unique @pdf\#src:@line@tex'
+            let g:vimtex_view_general_options_latexmk = '--unique'
+        endif
+        if has('nvim')
+            let g:vimtex_latexmk_progname = 'nvr'
+        endif
     "   " syntastic settings for latex
         "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['tex'] }
         "let g:syntastic_tex_checkers = ['chktex', 'lacheck', 'proselint']
         let g:syntastic_tex_checkers = ['chktex', 'proselint']
         let g:vimtex_latexmk_continuous = 1
-        let g:vimtex_latexmk_progname = 'nvr'
-        let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-        let g:vimtex_view_general_options = '-r @line @pdf @tex'
-        let g:vimtex_view_general_options_latexmk = '-r 1'
 
         let g:vimtex_quickfix_ignored_warnings = [
         \ 'Underfull',
@@ -665,22 +695,6 @@
         " This adds a callback hook that updates Skim after compilation
         "let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
 
-        function! UpdateSkim(status)
-          if !a:status | return | endif
-
-          let l:out = b:vimtex.out()
-          let l:cmd = [g:vimtex_view_general_viewer, '-r']
-          if !empty(system('pgrep Skim'))
-            call extend(l:cmd, ['-g'])
-          endif
-          if has('nvim')
-            call jobstart(l:cmd + [line('.'), l:out])
-          elseif has('job')
-            call job_start(l:cmd + [line('.'), l:out])
-          else
-            call system(join(l:cmd + [line('.'), shellescape(l:out)], ' '))
-          endif
-        endfunction
         " Latex spell checking
         " disable in comments
         let g:tex_comment_nospell=1
