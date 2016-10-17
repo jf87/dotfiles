@@ -40,4 +40,4 @@ sudo pip3 install --upgrade neovim
 mkdir ~/.config
 ln -s ~/.vim ~/.config/nvim
 ln -s ~/.vimrc ~/.config/nvim/init.vim
-nvim +UpdateRemotePlugins +q
+nvim +UpdateRemotePlugins +GoInstallBinaries +q
