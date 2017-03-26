@@ -1,8 +1,5 @@
-" Modeline and Notes {
-" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
-"
-"   based on spf13.com
-" }
+"  Based on spf13.com
+" -----------------------------------------------------------------------------
 " Identify platform {
     silent function! OSX()
         return has('macunix')
@@ -14,163 +11,190 @@
         return  (has('win16') || has('win32') || has('win64'))
     endfunction
 
+    " figure out our config directory
+    let config_dir = has("nvim") ? '~/.config/nvim' : '~/.vim'
+" }
 " Environment {
-
-    " Basics {
-        set nocompatible        " Must be first line
-        set background=dark     " Assume a dark background
-    " }
-
-
-    " Setup Bundle Support {
-        " The next three lines ensure that the ~/.vim/bundle/ system works
-        filetype off
-        set rtp+=~/.vim/bundle/Vundle.vim
-        call vundle#begin()
-        " let Vundle manage Vundle, required
-        Plugin 'VundleVim/Vundle.vim'
-    " }
-
+    set background=dark     " Assume a dark background
 " }
 
-" Bundles {
-
-    " Deps {
-        Bundle 'MarcWeber/vim-addon-mw-utils'
-        Bundle 'tomtom/tlib_vim'
-        if executable('ag')
-            Bundle 'mileszs/ack.vim'
-            let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
-        elseif executable('ack-grep')
-            let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-            Bundle 'mileszs/ack.vim'
-        elseif executable('ack')
-            Bundle 'mileszs/ack.vim'
-        endif
-    " }
+" vim-plug {
+    set nocompatible
+    if empty(glob(config_dir . '/autoload/plug.vim'))
+      silent execute '!curl -fLo ' . config_dir . '/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+      autocmd VimEnter * PlugInstall
+    endif
+    call plug#begin('~/.config/nvim/plugged')
 
     " General {
-            Bundle 'scrooloose/nerdtree'
-            Bundle 'altercation/vim-colors-solarized'
-            Bundle 'spf13/vim-colors'
-            Bundle 'tpope/vim-surround'
-            Bundle 'tpope/vim-repeat'
-            Bundle 'rhysd/conflict-marker.vim'
-            Bundle 'jiangmiao/auto-pairs'
-            Bundle 'ctrlpvim/ctrlp.vim'
-            Bundle 'tacahiroy/ctrlp-funky'
-            Bundle 'terryma/vim-multiple-cursors'
-            Bundle 'vim-scripts/sessionman.vim'
-            Bundle 'matchit.zip'
-            Bundle 'vim-airline/vim-airline'
-            Bundle 'vim-airline/vim-airline-themes'
-            Bundle 'powerline/fonts'
-            Bundle 'bling/vim-bufferline'
-            Bundle 'easymotion/vim-easymotion'
-            Bundle 'jistr/vim-nerdtree-tabs'
-            Bundle 'flazz/vim-colorschemes'
-            Bundle 'mbbill/undotree'
-            Bundle 'nathanaelkane/vim-indent-guides'
-            Bundle 'vim-scripts/restore_view.vim'
-            Bundle 'mhinz/vim-signify'
-            Bundle 'tpope/vim-abolish.git'
-            Bundle 'osyo-manga/vim-over'
-            Bundle 'kana/vim-textobj-user'
-            Bundle 'kana/vim-textobj-indent'
-            Bundle 'gcmt/wildfire.vim'
-    " }
+            " Open file at specific line
+            Plug 'bogado/file-line'
+            Plug 'scrooloose/nerdtree'
+            " NERDTree and tabs together in Vim, painlessly
+            Plug 'jistr/vim-nerdtree-tabs'
+            " Collection of vim colorschemes
+            Plug 'flazz/vim-colorschemes'
+            Plug 'altercation/vim-colors-solarized'
+            "Plug 'spf13/vim-colors'
+            Plug 'tpope/vim-surround'
+            Plug 'tpope/vim-repeat'
+            " Git conflict highlighting and jump between conflicts
+            Plug 'rhysd/conflict-marker.vim'
+            " auto generate pairs for brackets, quotes etc
+            Plug 'jiangmiao/auto-pairs'
+            " Full path fuzzy file, buffer, mru, tag, ... finder for Vim
+            Plug 'ctrlpvim/ctrlp.vim'
+            "Plug 'tacahiroy/ctrlp-funky'
+            "sublime text like multiple selection feature (ctrl-n)
+            Plug 'terryma/vim-multiple-cursors'
+            "Plug 'vim-scripts/sessionman.vim'
+            "Plug 'matchit.zip'
+            "Lean & mean status/tabline for vim that's light as air
+            Plug 'vim-airline/vim-airline'
+            Plug 'vim-airline/vim-airline-themes'
+            " powerline fonts for airline
+            Plug 'powerline/fonts'
+            " shows open buffers in statusline
+            Plug 'bling/vim-bufferline'
+            " EasyMotion provides a much simpler way to use some motions
+            " in vim
+            Plug 'easymotion/vim-easymotion'
+            " Visualize Undo-Tree
+            Plug 'mbbill/undotree'
+            " visually displaying indent levels in Vim
+            Plug 'nathanaelkane/vim-indent-guides'
+            " restoring file's cursor position and folding
+            Plug 'vim-scripts/restore_view.vim'
+            " show version control differences
+            Plug 'mhinz/vim-signify'
+            " easily search for, substitute, and abbreviate multiple variants of a word
+            Plug 'tpope/vim-abolish'
+            " substitute preview
+            Plug 'osyo-manga/vim-over'
+            " creating own textobjects
+            Plug 'kana/vim-textobj-user'
+            Plug 'kana/vim-textobj-indent'
+            "use enter to select closest textobject
+            Plug 'gcmt/wildfire.vim'
+        " }
 
-    " Writing {
-            Bundle 'reedes/vim-litecorrect'
-            Bundle 'reedes/vim-textobj-sentence'
-            Bundle 'reedes/vim-textobj-quote'
-            Bundle 'reedes/vim-wordy'
-            Plugin 'beloglazov/vim-online-thesaurus'
-    " }
+        " Writing {
+            " Lightweight auto-correction for Vim
+            Plug 'reedes/vim-litecorrect'
+            " better sentence selection
+            Plug 'reedes/vim-textobj-sentence'
+            Plug 'reedes/vim-textobj-quote'
+            " Uncover usage problems in your writing
+            Plug 'reedes/vim-wordy'
+            Plug 'beloglazov/vim-online-thesaurus'
+            Plug 'IngoHeimbach/spelllangidentifier', {'do' : 'make --directory=./mguesser/'}
+        " }
 
-    " General Programming {
+        " General Programming {
             " Pick one of the checksyntax, jslint, or syntastic
-            Bundle 'scrooloose/syntastic'
-            Bundle 'tpope/vim-fugitive'
-            Bundle 'mattn/webapi-vim'
-            Bundle 'mattn/gist-vim'
-            Bundle 'scrooloose/nerdcommenter'
-            Bundle 'tpope/vim-commentary'
-            Bundle 'godlygeek/tabular'
-            Bundle 'luochen1990/rainbow'
+            "Plug 'scrooloose/syntastic'
+            "Git wrapper
+            Plug 'tpope/vim-fugitive'
+            "Plug 'mattn/webapi-vim'
+            "Create gists from current vim buffer
+            Plug 'mattn/gist-vim'
+            " comment/uncomment
+            Plug 'scrooloose/nerdcommenter'
+            " alternative comment/uncomment
+            "Plug 'tpope/vim-commentary'
+            "line up text 
+            Plug 'godlygeek/tabular'
+            " different levels of paranthesis in different colors
+            Plug 'luochen1990/rainbow'
             if executable('ctags')
-                Bundle 'majutsushi/tagbar'
+                " browse tags of current file
+                Plug 'majutsushi/tagbar'
             endif
-    " }
+        " }
 
-    " Snippets & AutoComplete {
-            "Bundle 'Shougo/neocomplete.vim.git'
-            "Bundle 'Shougo/neosnippet'
-            "Bundle 'Shougo/neosnippet-snippets'
-            "Bundle 'honza/vim-snippets'
-            Plugin 'SirVer/ultisnips'
+        " Snippets & AutoComplete {
+            "Plug 'Shougo/neocomplete.vim.git'
+            "Plug 'Shougo/neosnippet'
+            "Plug 'Shougo/neosnippet-snippets'
+            "Plug 'honza/vim-snippets'
+            Plug 'SirVer/ultisnips'
             " Snippets are separated from the engine. Add this if you want them:
-            Plugin 'honza/vim-snippets'
-            Bundle 'Shougo/deoplete.nvim'
-    " }
+            Plug 'honza/vim-snippets'
+        " }
 
-    " Python {
+        " Python {
             " Pick either python-mode or pyflakes & pydoc
-            Bundle 'klen/python-mode'
-            Bundle 'yssource/python.vim'
-            Bundle 'python_match.vim'
-            Bundle 'pythoncomplete'
-    " }
+            Plug 'klen/python-mode', {'for' : 'python'}
+            Plug 'yssource/python.vim' , {'for' : 'python'}
+            Plug 'python_match.vim' , {'for' : 'python'}
+            Plug 'pythoncomplete' , {'for' : 'python'}
+        " }
 
-    " Javascript {
-            Bundle 'elzr/vim-json'
-            "Bundle 'groenewege/vim-less'
-            "Bundle 'pangloss/vim-javascript'
-            "Bundle 'briancollins/vim-jst'
-            "Bundle 'kchmck/vim-coffee-script'
-    " }
+        " Javascript {
+            Plug 'elzr/vim-json'
+            "Plug 'groenewege/vim-less'
+            Plug 'pangloss/vim-javascript', { 'for' : 'javascript'}
+            "Plug 'briancollins/vim-jst'
+            "Plug 'kchmck/vim-coffee-script'
+        " }
 
-    " HTML {
-            "Bundle 'amirh/HTML-AutoCloseTag'
-            "Bundle 'hail2u/vim-css3-syntax'
-            "Bundle 'gorodinskiy/vim-coloresque'
-            "Bundle 'tpope/vim-haml'
-            "Bundle 'mattn/emmet-vim'
-    " }
-    " Go Lang {
-            "Bundle 'Blackrush/vim-gocode'
-            Bundle 'fatih/vim-go'
-            Bundle 'zchee/deoplete-go'
-    " }
-    " Misc {
-            "Bundle 'rust-lang/rust.vim'
-            Bundle 'tpope/vim-markdown'
-            Bundle 'spf13/vim-preview'
-            Bundle 'tpope/vim-cucumber'
-            Bundle 'cespare/vim-toml'
-            Bundle 'quentindecock/vim-cucumber-align-pipes'
-            Bundle 'saltstack/salt-vim'
-            Bundle 'lervag/vimtex'
-            Bundle 'christoomey/vim-tmux-navigator'
-            Bundle 'chrisbra/Recover.vim'
-            Bundle 'vimoutliner/vimoutliner'
-            Plugin 'amperser/proselint', {'rtp': 'plugins/vim/syntastic_proselint/'}
-            "Plugin 'amperser/proselint', {'rtp': 'plugins/vim/'}
-            "Bundle 'vimwiki/vimwiki.git'
-            "Bundle 'jceb/vim-orgmode'
-            "Bundle 'tpope/vim-speeddating'
-    " }
-    " All of your Plugins must be added before the following line
-    call vundle#end()            " required
-    filetype plugin indent on    " required
-    " To ignore plugin indent changes, instead use:
-    "filetype plugin on
-    "
-    " Brief help
-    " :PluginList       - lists configured plugins
-    " :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-    " :PluginSearch foo - searches for foo; append `!` to refresh local cache
-    " :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+        " HTML {
+            Plug 'othree/html5.vim', { 'for' : 'html' }
+            Plug 'amirh/HTML-AutoCloseTag', { 'for' : 'html' }
+            Plug 'hail2u/vim-css3-syntax', {'for' : 'css'}
+            "color preview for vim.
+            Plug 'gorodinskiy/vim-coloresque' , {'for' : ['html', 'css']}
+            "Plug 'mattn/emmet-vim'
+        " }
+        " Go Lang {
+            "Plug 'Blackrush/vim-gocode'
+            Plug 'fatih/vim-go', { 'for' : 'go' }
+            if has('nvim')
+                Plug 'zchee/deoplete-go', { 'do' : 'make' }
+            endif
+        " }
+        " Misc {
+            Plug 'tpope/vim-markdown'
+            Plug 'spf13/vim-preview'
+            Plug 'tpope/vim-cucumber'
+            Plug 'cespare/vim-toml'
+            Plug 'quentindecock/vim-cucumber-align-pipes'
+            Plug 'saltstack/salt-vim'
+            Plug 'lervag/vimtex'
+            Plug 'christoomey/vim-tmux-navigator'
+            Plug 'chrisbra/Recover.vim'
+            Plug 'vimoutliner/vimoutliner'
+            Plug 'amperser/proselint', {'rtp': 'plugins/vim/syntastic_proselint/'}
+            Plug 'vimwiki/vimwiki'
+            Plug 'vim-pandoc/vim-pandoc'
+            Plug 'vim-pandoc/vim-pandoc-syntax'
+            "Plug 'jceb/vim-orgmode'
+            "Plug 'tpope/vim-speeddating'
+        " }
+          Plug 'scrooloose/syntastic'
+        if has('nvim')
+          Plug 'neomake/neomake'
+          Plug 'Shougo/deoplete.nvim', { 'do' : ':UpdateRemotePlugins' }
+        else
+          Plug 'tpope/vim-sensible'
+        endif
+        call plug#end()
+" }
+        " NOT NEEDED
+        " Dependencies {
+            "Plug 'MarcWeber/vim-addon-mw-utils'
+            "Plug 'tomtom/tlib_vim'
+            "if executable('ag')
+                "Plug 'mileszs/ack.vim'
+                "let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
+            "elseif executable('ack-grep')
+                "let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+                "Plug 'mileszs/ack.vim'
+            "elseif executable('ack')
+                "Plug 'mileszs/ack.vim'
+            "endif
+        " }
+            "Plug 'rust-lang/rust.vim'
 " }
 
 
@@ -589,12 +613,12 @@
     " stuff to sort
     " {
         " Right wrapping behavior for text like files
-        au BufRead,BufNewFile *.txt,*.tex,*.md set wrap linebreak nolist textwidth=0 wrapmargin=0
+        au BufRead,BufNewFile *.txt,*.tex,*.md,*.wiki set wrap linebreak nolist textwidth=0 wrapmargin=0
 
         " Enable spell checker for text like files
-        au BufRead *.txt,*.tex,*.md setlocal spell
+        au BufRead *.txt,*.tex,*.md,*.wiki setlocal spell
         "hi SpellBad cterm=underline ctermfg=red
-        au BufRead *.txt,*.tex,*.md hi SpellBad cterm=underline,bold ctermfg=white ctermbg=red
+        au BufRead *.txt,*.tex,*.md,*.wiki hi SpellBad cterm=underline,bold ctermfg=white ctermbg=red
         " Vertical line at 80 char to follow PEP
         if exists('+colorcolumn')
           set colorcolumn=80
@@ -629,6 +653,15 @@
         let g:go_fmt_command = "goimports"
     " }
 
+    " VimWiki
+    " {
+        let wiki = {}
+        let g:vimwikidir = $HOME . "/dropbox/sync/vimwiki"
+        let wiki.path = g:vimwikidir
+        let g:vimwiki_list=[wiki]
+        "let g:vimwiki_list = [{'path': '~/dropbox/sync/vimwiki',
+                       "\ 'syntax': 'markdown', 'ext': '.md'}]
+    " }
 
     " LaTex
     " {
@@ -668,10 +701,12 @@
         let g:syntastic_tex_checkers = ['chktex', 'proselint']
         let g:vimtex_latexmk_continuous = 1
 
-        let g:vimtex_quickfix_ignored_warnings = [
-        \ 'Underfull',
-        \ 'Overfull',
-        \ ]
+
+        let g:vimtex_quickfix_warnings = {
+              \ 'overfull' : 0,
+              \ 'underfull' : 0,
+              \}
+
 
         " enable deoplete for latex
         if !exists('g:deoplete#omni_patterns')
@@ -705,6 +740,11 @@
         "don't conceal math environments etc
         let g:tex_conceal = ""
     " }
+
+    " spelllangidentifier
+    " {
+        map <F6> :'{,'}SpellLangIdentify setlocal spell<CR>:setl spl<CR>
+    " }
     
     " Python
     " {
@@ -717,7 +757,7 @@
         let g:syntastic_always_populate_loc_list = 0
         let g:syntastic_auto_loc_list = 1
         let g:syntastic_check_on_open = 1
-        let g:syntastic_check_on_wq = 0
+        let g:syntastic_check_on_wq = 1
 
 
         "let g:syntastic_enable_signs = 0
@@ -838,3 +878,4 @@
     " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
     " }
 " }
+"
