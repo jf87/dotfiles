@@ -1,14 +1,15 @@
 #!/bin/bash
-ln -s ~/dotfiles/tmux.conf ~/.tmux.conf
-ln -s ~/dotfiles/ctags ~/ctags
-ln -s ~/dotfiles/zpreztorc ~/.zpreztorc
-ln -s ~/dotfiles/zshrc ~/.zshrc
-ln -s ~/dotfiles/ctags ~/ctags
-ln -s ~/dotfiles/vim/vimrc ~/.vimrc
+ln -s -f ~/dotfiles/tmux.conf ~/.tmux.conf
+ln -s -f ~/dotfiles/ctags ~/ctags
+ln -s -f ~/dotfiles/zpreztorc ~/.zpreztorc
+ln -s -f ~/dotfiles/zshrc ~/.zshrc
+ln -s -f ~/dotfiles/ctags ~/ctags
+ln -s -f ~/dotfiles/vim/vimrc ~/.vimrc
 if [ "$(uname)" == "Darwin"  ]; then
     brew update
+    brew install python3
+    brew install tmux
     brew install zsh
-    brew install macvim --with-lua
     brew install neovim/neovim/neovim
     brew install reattach-to-user-namespace
     ln -s ~/dotfiles/hammerspoon ~/.hammerspoon
