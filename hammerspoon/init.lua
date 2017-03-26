@@ -103,6 +103,7 @@ end
 
 
 -- Update the fan and temp. Needs iStats CLI tool from homebrew.
+-- gem install iStats
 local function updateStats()
   fanSpeed = mCapture("/usr/local/bin/istats fan speed | cut -c14- | sed 's/\\..*//'", false)
   temp = mCapture("/usr/local/bin/istats cpu temp | cut -c11- | sed 's/\\..*//'", false)
@@ -172,6 +173,11 @@ local desktopResolutions = {
   {w = 2560, h = 1440, s = 2}
 }
 
+
+local mbairResolutions = {
+  {w = 1440, h = 900, s = 1},
+  {w = 1440, h = 900, s = 1}
+}
 -- initialize variable to ultimately store the correct set of resolutions
 local resolutions = {}
 local choices = {}
@@ -182,6 +188,8 @@ if hs.host.localizedName() == "iMac" then
   resolutions = desktopResolutions
 elseif hs.host.localizedName() == "MacBook Pro" then
   resolutions = laptopResolutions
+elseif hs.host.localizedName() == "MacBook Air" then
+  resolutions = mbairResolutions
 else
   print('no resolutions available for this computer/monitor')
   print(hs.host.localizedName())
@@ -253,8 +261,10 @@ setupResModal()
 
 -- Initializes a menubar item that displays the current resolution of display
 -- And when clicked, toggles between two most commonly used resolutions
-local resolutionMenu = hs.menubar.new()
-
+print(resolutions[0])
+if next(resolutions) ~= nil then
+    local resolutionMenu = hs.menubar.new()
+end
 -- sets title to be displayed in menubar (really doesn't have to be own func?)
 function setResolutionDisplay(w)
   resolutionMenu:setTitle(tostring(w))
