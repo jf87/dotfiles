@@ -8,6 +8,7 @@ ln -s -f ~/dotfiles/vim/vimrc ~/.vimrc
 if [ "$(uname)" == "Darwin"  ]; then
     brew update
     brew install python3
+    brew install vim
     brew install tmux
     brew install zsh
     brew install neovim/neovim/neovim
