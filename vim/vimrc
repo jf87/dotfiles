@@ -155,6 +155,7 @@
         " }
         " Misc {
             Plug 'tpope/vim-markdown'
+            Plug 'suan/vim-instant-markdown'
             Plug 'spf13/vim-preview'
             Plug 'tpope/vim-cucumber'
             Plug 'cespare/vim-toml'
