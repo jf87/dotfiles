@@ -87,7 +87,7 @@
             " Uncover usage problems in your writing
             Plug 'reedes/vim-wordy'
             Plug 'beloglazov/vim-online-thesaurus'
-            Plug 'IngoHeimbach/spelllangidentifier', {'do' : 'make --directory=./mguesser/'}
+            " Plug 'IngoHeimbach/spelllangidentifier', {'do' : 'make --directory=./mguesser/'}
         " }
 
         " General Programming {
@@ -744,7 +744,7 @@
 
     " spelllangidentifier
     " {
-        map <F6> :'{,'}SpellLangIdentify setlocal spell<CR>:setl spl<CR>
+    "  map <F6> :'{,'}SpellLangIdentify setlocal spell<CR>:setl spl<CR>
     " }
     
     " Python
