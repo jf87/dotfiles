@@ -18,14 +18,18 @@ alias tmux='tmux -2'
 export EDITOR=/usr/bin/vim
 export VISUAL=/usr/bin/vim
 
+export CCNL_HOME=$HOME/src/ccn-lite
+
+
 export GOPATH=$HOME/go
 path=(
   $path
-    $HOME/.yadr/bin
-      $HOME/.yadr/bin/yadr
-        $GOPATH/bin
-
+  $HOME/.yadr/bin
+  $HOME/.yadr/bin/yadr
+  $GOPATH/bin
+  $CCNL_HOME/bin
 )
+
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 alias emacs='emacs -nw'
