@@ -181,24 +181,6 @@
         endif
         call plug#end()
 " }
-        " NOT NEEDED
-        " Dependencies {
-            "Plug 'MarcWeber/vim-addon-mw-utils'
-            "Plug 'tomtom/tlib_vim'
-            "if executable('ag')
-                "Plug 'mileszs/ack.vim'
-                "let g:ackprg = 'ag --nogroup --nocolor --column --smart-case'
-            "elseif executable('ack-grep')
-                "let g:ackprg="ack-grep -H --nocolor --nogroup --column"
-                "Plug 'mileszs/ack.vim'
-            "elseif executable('ack')
-                "Plug 'mileszs/ack.vim'
-            "endif
-        " }
-            "Plug 'rust-lang/rust.vim'
-" }
-
-
 " General {
 
     set virtualedit=onemore             " Allow for cursor beyond last character
@@ -305,6 +287,8 @@
     "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
     "autocmd FileType go autocmd BufWritePre <buffer> Fmt
     autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
+
+
     autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
     " preceding line best in a plugin but here for now.
 
@@ -372,41 +356,6 @@
 "
 " Plugins {
 "
-    " GoLang {
-    "   use old regex engine, which is much faster
-        "set re=1
-        "let g:go_highlight_functions = 1
-        "let g:go_highlight_methods = 1
-        "let g:go_highlight_structs = 1
-        "let g:go_highlight_operators = 1
-        "let g:go_highlight_build_constraints = 1
-        "let g:go_fmt_command = "goimports"
-        "let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
-        "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
-        "au FileType go nmap <Leader>s <Plug>(go-implements)
-        "au FileType go nmap <Leader>i <Plug>(go-info)
-        "au FileType go nmap <Leader>e <Plug>(go-rename)
-        "au FileType go nmap <leader>r <Plug>(go-run)
-        "au FileType go nmap <leader>b <Plug>(go-build)
-        "au FileType go nmap <leader>t <Plug>(go-test)
-        "au FileType go nmap <Leader>gd <Plug>(go-doc)
-        "au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
-        "au FileType go nmap <leader>co <Plug>(go-coverage)
-        " }
-        "
-        "
-        " Syntasic {
-            "set statusline+=%#warningmsg#
-            "set statusline+=%{SyntasticStatuslineFlag()}
-            "set statusline+=%*
-
-            "let g:syntastic_always_populate_loc_list = 1
-            "let g:syntastic_auto_loc_list = 1
-            "let g:syntastic_check_on_open = 1
-            "let g:syntastic_check_on_wq = 0
-
-        " }
-
     " Misc {
         if isdirectory(expand("~/.vim/plugged/nerdtree"))
             let g:NERDShutUp=1
@@ -741,7 +690,11 @@
         "don't conceal math environments etc
         let g:tex_conceal = ""
     " }
-
+    " Present
+    " {
+    autocmd BufNewFile,BufRead *.slide set filetype=present
+    let g:NERDCustomDelimiters = { 'present': { 'left': '# ','right': '' } }
+    " }
     " spelllangidentifier
     " {
     "  map <F6> :'{,'}SpellLangIdentify setlocal spell<CR>:setl spl<CR>
@@ -880,3 +833,6 @@
     " }
 " }
 "
+filetype on
+filetype plugin on
+filetype indent on
