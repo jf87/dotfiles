@@ -102,7 +102,7 @@
             Plug 'scrooloose/nerdcommenter'
             " alternative comment/uncomment
             "Plug 'tpope/vim-commentary'
-            "line up text 
+            "line up text, must come before markdown plugin
             Plug 'godlygeek/tabular'
             " different levels of paranthesis in different colors
             Plug 'luochen1990/rainbow'
@@ -148,7 +148,7 @@
         " }
         " Go Lang {
             "Plug 'Blackrush/vim-gocode'
-            Plug 'fatih/vim-go', { 'for' : 'go' }
+            Plug 'fatih/vim-go', { 'for' : 'go', 'do' : ':GoUpdateBinaries' }
             if has('nvim')
                 Plug 'zchee/deoplete-go', { 'do' : 'make' }
             endif
@@ -167,8 +167,8 @@
             Plug 'vimoutliner/vimoutliner'
             Plug 'amperser/proselint', {'rtp': 'plugins/vim/syntastic_proselint/'}
             Plug 'vimwiki/vimwiki'
-            Plug 'vim-pandoc/vim-pandoc'
-            Plug 'vim-pandoc/vim-pandoc-syntax'
+            "Plug 'vim-pandoc/vim-pandoc'
+            "Plug 'vim-pandoc/vim-pandoc-syntax'
             "Plug 'jceb/vim-orgmode'
             "Plug 'tpope/vim-speeddating'
         " }
@@ -563,12 +563,12 @@
     " stuff to sort
     " {
         " Right wrapping behavior for text like files
-        au BufRead,BufNewFile *.txt,*.tex,*.md,*.wiki set wrap linebreak nolist textwidth=0 wrapmargin=0
+        au BufRead,BufNewFile *.txt,*.tex,*.md,*.wiki,*.slide set wrap linebreak nolist textwidth=0 wrapmargin=0
 
         " Enable spell checker for text like files
-        au BufRead *.txt,*.tex,*.md,*.wiki setlocal spell
+        au BufRead *.txt,*.tex,*.md,*.wiki,*.slide setlocal spell
         "hi SpellBad cterm=underline ctermfg=red
-        au BufRead *.txt,*.tex,*.md,*.wiki hi SpellBad cterm=underline,bold ctermfg=white ctermbg=red
+        au BufRead *.txt,*.tex,*.md,*.wiki,*.slide hi SpellBad cterm=underline,bold ctermfg=white ctermbg=red
         " Vertical line at 80 char to follow PEP
         if exists('+colorcolumn')
           set colorcolumn=80
@@ -594,6 +594,7 @@
         " fix tmux neovim pane switching issue
         " https://github.com/neovim/neovim/issues/2048#issuecomment-78045837
         nnoremap <silent> <BS> :TmuxNavigateLeft<cr>
+
     " }
 
 
@@ -713,6 +714,11 @@
         let g:syntastic_check_on_open = 1
         let g:syntastic_check_on_wq = 1
 
+        " Golang
+        let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
+        "let g:syntastic_go_checkers = ['go']
+        "let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+        "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 
         "let g:syntastic_enable_signs = 0
         "let g:syntastic_enable_balloons = 0
@@ -833,6 +839,10 @@
     " }
 " }
 "
+" don't hide some symbols, see https://vi.stackexchange.com/questions/7258/how-do-i-prevent-vim-from-hiding-symbols-in-markdown-and-json/7263
+"set conceallevel=0
+"let g:vim_markdown_conceal = 0
+au BufRead,BufNewFile *.md set filetype=markdown
 filetype on
 filetype plugin on
 filetype indent on
