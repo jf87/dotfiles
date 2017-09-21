@@ -23,7 +23,7 @@ Return a list of installed packages or nil for every skipped package."
 ;; Activate installed packages
 (package-initialize)
 
-(ensure-package-installed 'evil 'helm 'evil-leader 'org 'ox-pandoc)
+(ensure-package-installed 'evil 'helm 'evil-leader 'org)
 (evil-mode 1)
 (setq evil-leader/in-all-states 1)
 (global-evil-leader-mode)
