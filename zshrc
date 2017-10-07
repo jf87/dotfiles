@@ -28,6 +28,8 @@ path=(
   $HOME/.yadr/bin/yadr
   $GOPATH/bin
   $CCNL_HOME/bin
+  /usr/local/go/bin
+  $HOME/.npm-packages/bin
 )
 
 export LC_ALL=en_US.UTF-8

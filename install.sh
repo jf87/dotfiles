@@ -23,10 +23,12 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo apt-get update
     sudo apt-get install neovim
+    sudo apt-get install npm
     sudo apt-get install python-dev python-pip python3-dev python3-pip
     git clone https://github.com/Anthony25/gnome-terminal-colors-solarized ~/gnome-terminal-colors-solarized
     ~/gnome-terminal-colors-solarized/install.sh
 fi
+npm config set prefix '~/.npm-packages'
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 chsh -s /bin/zsh
 exec zsh
