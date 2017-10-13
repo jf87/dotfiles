@@ -32,6 +32,13 @@ path=(
   $HOME/.npm-packages/bin
 )
 
+eval `dircolors /$HOME/.dir_colors`
+
+# this fixes hidden cursor problem on gnome terminal
+# see https://github.com/zsh-users/zsh-syntax-highlighting/issues/171
+typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[cursor]=underline
+
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 alias emacs='emacs -nw'
