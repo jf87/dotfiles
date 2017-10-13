@@ -1,4 +1,3 @@
-#
 # Executes commands at the start of an interactive session.
 #
 # Authors:
@@ -32,6 +31,7 @@ path=(
   $HOME/.npm-packages/bin
 )
 
+# https://github.com/seebi/dircolors-solarized
 eval `dircolors /$HOME/.dir_colors`
 
 # this fixes hidden cursor problem on gnome terminal
