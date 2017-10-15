@@ -14,8 +14,18 @@ fi
 #force 256 colors
 alias tmux='tmux -2'
 
-export EDITOR=/usr/local/bin/vim
-export VISUAL=/usr/local/bin/vim
+if [[ `uname` == 'Linux' ]]
+then
+    export EDITOR=/usr/bin/vim
+    export VISUAL=/usr/bin/vim
+else
+
+    if [[ `uname` == 'Darwin' ]]
+    then
+            export EDITOR=/usr/local/bin/vim
+            export VISUAL=/usr/local/bin/vim
+    fi
+fi
 
 export CCNL_HOME=$HOME/src/ccn-lite
 
