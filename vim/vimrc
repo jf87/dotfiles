@@ -155,7 +155,7 @@
         " }
         " Misc {
             Plug 'tpope/vim-markdown'
-            Plug 'suan/vim-instant-markdown'
+            Plug 'suan/vim-instant-markdown', {'do' : 'npm -g install instant-markdown-d'}
             Plug 'spf13/vim-preview'
             Plug 'tpope/vim-cucumber'
             Plug 'cespare/vim-toml'

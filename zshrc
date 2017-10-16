@@ -1,4 +1,3 @@
-#
 # Executes commands at the start of an interactive session.
 #
 # Authors:
@@ -15,8 +14,18 @@ fi
 #force 256 colors
 alias tmux='tmux -2'
 
-export EDITOR=/usr/bin/vim
-export VISUAL=/usr/bin/vim
+if [[ `uname` == 'Linux' ]]
+then
+    export EDITOR=/usr/bin/vim
+    export VISUAL=/usr/bin/vim
+else
+
+    if [[ `uname` == 'Darwin' ]]
+    then
+            export EDITOR=/usr/local/bin/vim
+            export VISUAL=/usr/local/bin/vim
+    fi
+fi
 
 export CCNL_HOME=$HOME/src/ccn-lite
 
@@ -28,7 +37,17 @@ path=(
   $HOME/.yadr/bin/yadr
   $GOPATH/bin
   $CCNL_HOME/bin
+  /usr/local/go/bin
+  $HOME/.npm-packages/bin
 )
+
+# https://github.com/seebi/dircolors-solarized
+eval `dircolors /$HOME/.dir_colors`
+
+# this fixes hidden cursor problem on gnome terminal
+# see https://github.com/zsh-users/zsh-syntax-highlighting/issues/171
+typeset -A ZSH_HIGHLIGHT_STYLES
+ZSH_HIGHLIGHT_STYLES[cursor]=underline
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
