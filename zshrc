@@ -18,6 +18,8 @@ if [[ `uname` == 'Linux' ]]
 then
     export EDITOR=/usr/bin/vim
     export VISUAL=/usr/bin/vim
+    # https://github.com/seebi/dircolors-solarized
+    eval `dircolors /$HOME/.dir_colors`
 else
 
     if [[ `uname` == 'Darwin' ]]
@@ -41,8 +43,6 @@ path=(
   $HOME/.npm-packages/bin
 )
 
-# https://github.com/seebi/dircolors-solarized
-eval `dircolors /$HOME/.dir_colors`
 
 # this fixes hidden cursor problem on gnome terminal
 # see https://github.com/zsh-users/zsh-syntax-highlighting/issues/171
