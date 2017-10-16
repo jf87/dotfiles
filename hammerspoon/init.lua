@@ -526,31 +526,6 @@ hk2 = hs.hotkey.bind(hyper, "n",
 
 
 ------------------------
--- Fast user switching
-------------------------
-
-function currentAccountId()
-  local file = assert(io.popen('/usr/bin/id -u', 'r'))
-  local output = file:read('*all')
-  file:close()
-
-  return output:gsub("%s+", ""):gsub("%s+$", "")
-end
-
-function switchUser(id, name)
-  hs.alert.show("Switch to " .. name)
-  os.execute('/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -switchToUserID ' .. id)
-end
-
-hs.hotkey.bind(hyper, "u", function()
-  if (currentAccountId() == personalUserId ) then
-    switchUser(workUserId, "work")
-  else
-    switchUser(personalUserId, "personal")
-  end
-end)
-
-------------------------
 -- Bluetooth
 ------------------------
 -- relies on https://github.com/toy/blueutil
@@ -768,29 +743,6 @@ function powerChanged()
 end
 
 hs.battery.watcher.new(powerChanged):start()
-
- --Replace Caffeine.app with 18 lines of Lua :D
---local caffeine = hs.menubar.new()
-
---function setCaffeineDisplay(state)
-	--local result
-	--if state then
-		--result = caffeine:setIcon("caffeine-on.pdf")
-	--else
-		--result = caffeine:setIcon("caffeine-off.pdf")
-	--end
---end
-
---function caffeineClicked()
-	--setCaffeineDisplay(hs.caffeinate.toggle("displayIdle"))
---end
-
---if caffeine then
-	--caffeine:setClickCallback(caffeineClicked)
-	--setCaffeineDisplay(hs.caffeinate.get("displayIdle"))
---end
-
---hs.hotkey.bind(hyper, 'c', caffeineClicked)
 
 
 ------------------------
