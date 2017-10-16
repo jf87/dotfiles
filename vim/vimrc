@@ -382,6 +382,11 @@
         endif
     " }
     "
+    " vim-online-thesaurus
+    let g:online_thesaurus_map_keys = 0
+    nnoremap <Leader>t :OnlineThesaurusCurrentWord<Cr>
+
+    "
     " JSON {
         nmap <leader>jt <Esc>:%!python -m json.tool<CR><Esc>:set filetype=json<CR>
         let g:vim_json_syntax_conceal = 0
@@ -586,8 +591,9 @@
         set nocursorline
         set norelativenumber
         " color to col 128
-        set synmaxcol=128
-        syntax sync minlines=256
+        "set synmaxcol=128
+        "syntax sync minlines=256
+        
         " Yank in vim/tmux combination
         set clipboard=unnamed
 
