@@ -34,6 +34,7 @@ export CCNL_HOME=$HOME/src/ccn-lite
 
 export GOPATH=$HOME/go
 path=(
+  /Users/jofu/google-cloud-sdk/bin
   $path
   $HOME/.yadr/bin
   $HOME/.yadr/bin/yadr

@@ -151,11 +151,12 @@
             Plug 'fatih/vim-go', { 'for' : 'go', 'do' : ':GoUpdateBinaries' }
             if has('nvim')
                 Plug 'zchee/deoplete-go', { 'do' : 'make' }
+                Plug 'sebdah/vim-delve'
             endif
         " }
         " Misc {
             Plug 'tpope/vim-markdown'
-            Plug 'suan/vim-instant-markdown', {'do' : 'npm -g install instant-markdown-d'}
+            Plug 'suan/vim-instant-markdown'
             Plug 'spf13/vim-preview'
             Plug 'tpope/vim-cucumber'
             Plug 'cespare/vim-toml'
@@ -608,6 +609,7 @@
     " {
         " autorun goimports when saving
         let g:go_fmt_command = "goimports"
+        let g:delve_backend = "native"
     " }
 
     " VimWiki

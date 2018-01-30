@@ -655,8 +655,8 @@ function ssidChangedCallback()
     lastSSID = newSSID
 end
 
-wifiWatcher = hs.wifi.watcher.new(ssidChangedCallback)
-wifiWatcher:start()
+--wifiWatcher = hs.wifi.watcher.new(ssidChangedCallback)
+--wifiWatcher:start()
 
 ------------------------
 -- Audio settings
@@ -742,7 +742,7 @@ function powerChanged()
   end
 end
 
-hs.battery.watcher.new(powerChanged):start()
+--hs.battery.watcher.new(powerChanged):start()
 
 
 ------------------------
