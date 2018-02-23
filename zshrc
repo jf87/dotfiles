@@ -19,7 +19,7 @@ then
     export EDITOR=/usr/bin/vim
     export VISUAL=/usr/bin/vim
     # https://github.com/seebi/dircolors-solarized
-    eval `dircolors /$HOME/.dir_colors`
+    eval `dircolors /$HOME/.dir_colors/dircolors`
 else
 
     if [[ `uname` == 'Darwin' ]]
