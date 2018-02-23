@@ -45,6 +45,12 @@ path=(
 )
 
 
+# Keep Virtualenv in new tmux panes or windows
+#if [ -n "$VIRTUAL_ENV" ]; then
+    #source $VIRTUAL_ENV/bin/activate
+#fi
+
+
 # this fixes hidden cursor problem on gnome terminal
 # see https://github.com/zsh-users/zsh-syntax-highlighting/issues/171
 typeset -A ZSH_HIGHLIGHT_STYLES
