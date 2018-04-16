@@ -64,3 +64,4 @@ alias nvimtex='NVIM_LISTEN_ADDRESS=/tmp/nvim_tex.sock nvim'
 
 # increase limit of open files
 ulimit -S -n 1024
+source /opt/ros/lunar/setup.zsh
