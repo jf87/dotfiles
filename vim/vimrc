@@ -91,17 +91,12 @@
         " }
 
         " General Programming {
-            " Pick one of the checksyntax, jslint, or syntastic
-            "Plug 'scrooloose/syntastic'
             "Git wrapper
             Plug 'tpope/vim-fugitive'
-            "Plug 'mattn/webapi-vim'
             "Create gists from current vim buffer
             Plug 'mattn/gist-vim'
             " comment/uncomment
             Plug 'scrooloose/nerdcommenter'
-            " alternative comment/uncomment
-            "Plug 'tpope/vim-commentary'
             "line up text, must come before markdown plugin
             Plug 'godlygeek/tabular'
             " different levels of paranthesis in different colors
@@ -153,11 +148,10 @@
             Plug 'christoomey/vim-tmux-navigator'
             Plug 'chrisbra/Recover.vim'
             Plug 'vimoutliner/vimoutliner'
-            Plug 'amperser/proselint', {'rtp': 'plugins/vim/syntastic_proselint/'}
         " }
-          Plug 'scrooloose/syntastic'
+          Plug 'w0rp/ale'
         if has('nvim')
-          Plug 'neomake/neomake'
+          "Plug 'neomake/neomake'
           Plug 'Shougo/deoplete.nvim', { 'do' : ':UpdateRemotePlugins' }
           Plug 'zchee/deoplete-jedi'
           Plug 'zchee/deoplete-go', { 'do' : 'make' }
@@ -397,7 +391,8 @@
             let g:pymode_options = 0
             let g:pymode_rope = 0
             let g:pymode_lint = 0
-            let g:syntastic_python_flake8_args='--ignore=E501,E225,F401,E302,E901'
+            "let g:syntastic_python_flake8_args='--ignore=E501,E116'
+            "let g:syntastic_python_flake8_args='--ignore=E501,E225,F401,E302,E901'
             "let g:pymode_syntax = 0
             "let g:pymode_syntax_slow_sync = 1
             "let g:pymode_rope_lookup_project = 0
@@ -445,6 +440,8 @@
         "\ deoplete#mappings#manual_complete()
         " jedi show docstring
         let g:deoplete#sources#jedi#show_docstring = 1
+        let g:python_host_prog = '/usr/local/bin/python'
+        let g:python3_host_prog = '/usr/local/bin/python3'
     " }
     " ctrlp {
         if isdirectory(expand("~/.config/nvim/plugged/ctrlp.vim/"))
@@ -667,7 +664,7 @@
     "   " syntastic settings for latex
         "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['tex'] }
         "let g:syntastic_tex_checkers = ['chktex', 'lacheck', 'proselint']
-        let g:syntastic_tex_checkers = ['chktex', 'proselint']
+        "let g:syntastic_tex_checkers = ['chktex', 'proselint']
         let g:vimtex_latexmk_continuous = 1
 
         let g:vimtex_quickfix_latexlog = {
@@ -723,15 +720,21 @@
         "let g:syntastic_python_checkers = ['flake8']
     " }
     
+    " ALE
+    " {
+        let g:ale_fixers = {
+        \   'python': ['yapf'],
+        \}
+    " }
     " Syntasic
     " {
-        let g:syntastic_always_populate_loc_list = 0
-        let g:syntastic_auto_loc_list = 1
-        let g:syntastic_check_on_open = 1
-        let g:syntastic_check_on_wq = 1
+        "let g:syntastic_always_populate_loc_list = 0
+        "let g:syntastic_auto_loc_list = 1
+        "let g:syntastic_check_on_open = 1
+        "let g:syntastic_check_on_wq = 1
 
         " Golang
-        let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
+        "let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
         "let g:syntastic_go_checkers = ['go']
         "let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
         "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
@@ -751,7 +754,7 @@
         "let g:syntastic_quiet_messages = { "type": "style" }
 
         "let g:syntastic_quiet_messages = { 'regex': 'SC2148' }
-        autocmd BufNewFile,BufRead *.tex let g:syntastic_quiet_messages = { "regex": 'Command terminated with space\|too-many-instance-attributes' }
+        "autocmd BufNewFile,BufRead *.tex let g:syntastic_quiet_messages = { "regex": 'Command terminated with space\|too-many-instance-attributes' }
         "let g:syntastic_always_populate_loc_list = 1
         "let g:syntastic_auto_loc_list = 1
         "let g:syntastic_check_on_open = 1
