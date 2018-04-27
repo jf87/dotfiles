@@ -111,14 +111,15 @@
             Plug 'SirVer/ultisnips'
             " Snippets are separated from the engine. Add this if you want them:
             Plug 'honza/vim-snippets'
+            Plug 'ervandew/supertab'
         " }
 
         " Python {
             " Pick either python-mode or pyflakes & pydoc
-            Plug 'klen/python-mode', {'for' : 'python'}
-            Plug 'yssource/python.vim' , {'for' : 'python'}
+            "Plug 'klen/python-mode', {'for' : 'python'}
+            "Plug 'yssource/python.vim' , {'for' : 'python'}
             Plug 'vim-scripts/python_match.vim' , {'for' : 'python'}
-            Plug 'vim-scripts/pythoncomplete' , {'for' : 'python'}
+            "Plug 'vim-scripts/pythoncomplete' , {'for' : 'python'}
         " }
 
         " Javascript {
@@ -158,9 +159,6 @@
           Plug 'sebdah/vim-delve'
         else
           Plug 'tpope/vim-sensible'
-          "Plug 'Shougo/deoplete.nvim'
-          "Plug 'roxma/nvim-yarp'
-          "Plug 'roxma/vim-hug-neovim-rpc'
         endif
         call plug#end()
 " }
@@ -173,11 +171,11 @@
     set iskeyword-=#                    " '#' is an end of word designator
     set iskeyword-=-                    " '-' is an end of word designator
     syntax on
-    
+
     " Instead of reverting the cursor to the last position in the buffer, we
     " set it to the first line when editing a git commit message
     au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
-    
+
     " http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session
     " Restore cursor to file position in previous editing session
     " To disable this, add the following to your .vimrc.before.local file:
@@ -375,34 +373,6 @@
         let g:vim_json_syntax_conceal = 0
     " }
 
-    " PyMode {
-        " Disable if python support not present
-        if !has('python') && !has('python3')
-            let g:pymode = 0
-        endif
-
-        if has('python3')
-            let g:pymode_python = 'python3'
-        endif
-
-        if isdirectory(expand("~/.config/nvim/plugged/python-mode"))
-            let g:pymode_lint_checkers = ['pyflakes']
-            let g:pymode_trim_whitespaces = 0
-            let g:pymode_options = 0
-            let g:pymode_rope = 0
-            let g:pymode_lint = 0
-            "let g:syntastic_python_flake8_args='--ignore=E501,E116'
-            "let g:syntastic_python_flake8_args='--ignore=E501,E225,F401,E302,E901'
-            "let g:pymode_syntax = 0
-            "let g:pymode_syntax_slow_sync = 1
-            "let g:pymode_rope_lookup_project = 0
-            "let g:pymode_rope_completion = 0
-            "let g:pymode_rope_complete_on_dot = 0
-            "let g:pymode_rope_autoimport = 0
-            "let g:pymode_folding = 0
-            let g:pymode_folding_nest_limit = 100 " this kills performance!
-        endif
-    " }
 
     " ultisnippets {
     "
@@ -411,9 +381,14 @@
         "let g:UltiSnipsJumpForwardTrigger="<c-b>"
         "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
         inoremap <silent><expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-        let g:UltiSnipsExpandTrigger="<tab>"
-        let g:UltiSnipsJumpForwardTrigger="<tab>"
-        let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+        let g:UltiSnipsExpandTrigger="<C-j>"
+        "let g:UltiSnipsJumpForwardTrigger="<tab>"
+        "let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+    " }
+    "
+    " Supertab
+    " {
+        let g:SuperTabDefaultCompletionType = "<c-n>"
     " }
 
     " deoplete.{
@@ -426,11 +401,11 @@
         " other way
         " disable autocomplete
         "let g:deoplete#disable_auto_complete = 1
-        if has("gui_running")
-            inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
-        else
-            inoremap <silent><expr><C-@> deoplete#mappings#manual_complete()
-        endif
+        "if has("gui_running")
+            "inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
+        "else
+            "inoremap <silent><expr><C-@> deoplete#mappings#manual_complete()
+        "endif
         " Uncomment to diable autocompletion
         " disable automatic completion
         "let g:deoplete#disable_auto_complete = 1
@@ -440,8 +415,7 @@
         "\ deoplete#mappings#manual_complete()
         " jedi show docstring
         let g:deoplete#sources#jedi#show_docstring = 1
-        let g:python_host_prog = '/usr/local/bin/python'
-        let g:python3_host_prog = '/usr/local/bin/python3'
+        "let g:deoplete#max_list = 10
     " }
     " ctrlp {
         if isdirectory(expand("~/.config/nvim/plugged/ctrlp.vim/"))
@@ -521,7 +495,9 @@
 
         " See `:echo g:airline_theme_map` for some more choices
         " Default in terminal vim is 'dark'
-        let g:airline_powerline_fonts=1
+        "let g:airline_powerline_fonts=1
+        " ALE output to airline
+        let g:airline#extensions#ale#enabled = 1
         if isdirectory(expand("~/.config/nvim/plugged/vim-airline-themes/"))
             if !exists('g:airline_theme')
                 let g:airline_theme = 'solarized'
@@ -614,8 +590,35 @@
                        "\ 'syntax': 'markdown', 'ext': '.md'}]
     " }
 
-    " LaTex
+    " vimtex
     " {
+        let g:vimtex_latexmk_continuous = 1
+        let g:vimtex_quickfix_open_on_warning = 0
+        let g:vimtex_quickfix_latexlog = {
+                    \ 'overfull' : 0,
+                    \ 'underfull' : 0,
+        \}
+        " proper minted environemt syntax
+        let g:vimtex_syntax_minted = [
+              \ {
+              \   'lang' : 'c',
+              \ },
+              \ {
+              \   'lang' : 'cpp',
+              \   'environments' : ['cppcode', 'cppcode_test'],
+              \ },
+              \ {
+              \   'lang' : 'csharp',
+              \   'syntax' : 'cs'
+              \ },
+              \ {
+              \   'lang' : 'python',
+              \   'ignore' : [
+              \     'pythonEscape',
+              \     'pythonBEscape',
+              \     ],
+              \ }
+              \]
         " Mac OS
         if OSX()
             let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
@@ -637,42 +640,34 @@
                 call system(join(l:cmd + [line('.'), shellescape(l:out)], ' '))
               endif
             endfunction
+            " This adds a callback hook that updates Skim after compilation
+            let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
         " Linux
         elseif LINUX()
-            let g:vimtex_view_general_viewer = 'okular'
-            let g:vimtex_view_general_options = '--unique @pdf\#src:@line@tex'
-            let g:vimtex_view_general_options_latexmk = '--unique'
+            let g:vimtex_view_method = 'zathura'
         endif
         if has('nvim')
             let g:vimtex_compiler_progname = 'nvr'
-            let g:vimtex_compiler_latexmk = {
-                \ 'backend' : 'nvim',
-                \ 'background' : 1,
-                \ 'build_dir' : '',
-                \ 'callback' : 1,
-                \ 'continuous' : 1,
-                \ 'executable' : 'latexmk',
-                \ 'options' : [
-                \   '-pdf',
-                \   '-verbose',
-                \   '-file-line-error',
-                \   '-synctex=1',
-                \   '-interaction=nonstopmode',
-                \ ],
-                \}
+            "let g:vimtex_compiler_latexmk = {
+                "\ 'backend' : 'nvim',
+                "\ 'background' : 1,
+                "\ 'build_dir' : '',
+                "\ 'callback' : 1,
+                "\ 'continuous' : 1,
+                "\ 'executable' : 'latexmk',
+                "\ 'options' : [
+                "\   '-pdf',
+                "\   '-verbose',
+                "\   '-shell-escape',
+                "\   '-file-line-error',
+                "\   '-synctex=1',
+                "\   '-interaction=nonstopmode',
+                "\ ],
+                "\}
         endif
-    "   " syntastic settings for latex
-        "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['tex'] }
-        "let g:syntastic_tex_checkers = ['chktex', 'lacheck', 'proselint']
-        "let g:syntastic_tex_checkers = ['chktex', 'proselint']
-        let g:vimtex_latexmk_continuous = 1
 
-        let g:vimtex_quickfix_latexlog = {
-              \ 'overfull' : 0,
-              \ 'underfull' : 0,
-              \}
-
-
+    " deoplete
+    " {
         " enable deoplete for latex
         if !exists('g:deoplete#omni_patterns')
           let g:deoplete#omni_patterns = {}
@@ -689,152 +684,47 @@
             \ . '|includepdf%(\s*\[[^]]*\])?\s*\{[^}]*'
             \ . '|includestandalone%(\s*\[[^]]*\])?\s*\{[^}]*'
             \ . ')\m'
-        " use leader d to look up in mac os dictionary
-        nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
-
-        " This adds a callback hook that updates Skim after compilation
-        "let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
-
-        " Latex spell checking
-        " disable in comments
-        let g:tex_comment_nospell=1
-
-        " never use plain tex for new files
-        let g:tex_flavor='latex'
-
-        "don't conceal math environments etc
-        let g:tex_conceal = ""
     " }
-    " Present
-    " {
-    autocmd BufNewFile,BufRead *.slide set filetype=present
-    let g:NERDCustomDelimiters = { 'present': { 'left': '# ','right': '' } }
-    " }
-    " spelllangidentifier
-    " {
-    "  map <F6> :'{,'}SpellLangIdentify setlocal spell<CR>:setl spl<CR>
-    " }
-    
-    " Python
-    " {
-        "let g:syntastic_python_checkers = ['flake8']
-    " }
-    
+
     " ALE
     " {
         let g:ale_fixers = {
         \   'python': ['yapf'],
         \}
     " }
-    " Syntasic
+
+    " mixed
     " {
-        "let g:syntastic_always_populate_loc_list = 0
-        "let g:syntastic_auto_loc_list = 1
-        "let g:syntastic_check_on_open = 1
-        "let g:syntastic_check_on_wq = 1
+        if OSX()
+            " use leader d to look up in mac os dictionary
+            nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
+        endif
 
-        " Golang
-        "let g:syntastic_go_checkers = ['govet', 'errcheck', 'go']
-        "let g:syntastic_go_checkers = ['go']
-        "let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
-        "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+        " Latex spell checking
+        " disable in comments
+        let g:tex_comment_nospell=1
+        " never use plain tex for new files
+        let g:tex_flavor='latex'
+        "don't conceal math environments etc
+        let g:tex_conceal = ""
 
-        "let g:syntastic_enable_signs = 0
-        "let g:syntastic_enable_balloons = 0
-        "let g:syntastic_enable_highlighting = 0
-        "let g:syntastic_warning_symbol = 'WW'
-        "let g:syntastic_error_symbol = 'EE'
-        "let g:syntastic_style_error_symbol = 'SE'
-        "let g:syntastic_style_warning_symbol = 'SW'
+        " present filetype from golang .slide format
+        autocmd BufNewFile,BufRead *.slide set filetype=present
+        let g:NERDCustomDelimiters = { 'present': { 'left': '# ','right': '' } }
 
-        "highlight SyntasticErrorLine guibg=#550000
-        "highlight SyntasticWarningLine guibg=#331d1e
+        " autodectect language
+        "map <F6> :'{,'}SpellLangIdentify setlocal spell<CR>:setl spl<CR>
 
-
-        "let g:syntastic_quiet_messages = { "type": "style" }
-
-        "let g:syntastic_quiet_messages = { 'regex': 'SC2148' }
-        "autocmd BufNewFile,BufRead *.tex let g:syntastic_quiet_messages = { "regex": 'Command terminated with space\|too-many-instance-attributes' }
-        "let g:syntastic_always_populate_loc_list = 1
-        "let g:syntastic_auto_loc_list = 1
-        "let g:syntastic_check_on_open = 1
-        "let g:syntastic_check_on_wq = 1
-    " }
-
-    " Statusline
-    " {
+        " Statusline
         set statusline+=%#warningmsg#
-        set statusline+=%{SyntasticStatuslineFlag()}
+        "set statusline+=%{SyntasticStatuslineFlag()}
         set statusline+=%*
     " }
 
-
 " }
 
-
 " Functions {
-
-
-    " Initialize directories {
-    function! InitializeDirectories()
-        let parent = $HOME
-        let prefix = 'vim'
-        let dir_list = {
-                    \ 'backup': 'backupdir',
-                    \ 'views': 'viewdir',
-                    \ 'swap': 'directory' }
-
-        if has('persistent_undo')
-            let dir_list['undo'] = 'undodir'
-        endif
-
-        " To specify a different directory in which to place the vimbackup,
-        " vimviews, vimundo, and vimswap files/directories, add the following to
-        " your .vimrc.before.local file:
-        "   let g:spf13_consolidated_directory = <full path to desired directory>
-        "   eg: let g:spf13_consolidated_directory = $HOME . '/.vim/'
-        if exists('g:spf13_consolidated_directory')
-            let common_dir = g:spf13_consolidated_directory . prefix
-        else
-            let common_dir = parent . '/.' . prefix
-        endif
-
-        for [dirname, settingname] in items(dir_list)
-            let directory = common_dir . dirname . '/'
-            if exists("*mkdir")
-                if !isdirectory(directory)
-                    call mkdir(directory)
-                endif
-            endif
-            if !isdirectory(directory)
-                echo "Warning: Unable to create backup directory: " . directory
-                echo "Try: mkdir -p " . directory
-            else
-                let directory = substitute(directory, " ", "\\\\ ", "g")
-                exec "set " . settingname . "=" . directory
-            endif
-        endfor
-    endfunction
-    call InitializeDirectories()
-    " }
-
-    " Initialize NERDTree as needed {
-    function! NERDTreeInitAsNeeded()
-        redir => bufoutput
-        buffers!
-        redir END
-        let idx = stridx(bufoutput, "NERD_tree")
-        if idx > -1
-            NERDTreeMirror
-            NERDTreeFind
-            wincmd l
-        endif
-    endfunction
-    " }
-
-    " }
-
-    " Shell command {
+    " Shell command
     function! s:RunShellCommand(cmdline)
         botright new
 
@@ -855,9 +745,9 @@
 
     command! -complete=file -nargs=+ Shell call s:RunShellCommand(<q-args>)
     " e.g. Grep current file for <search_term>: Shell grep -Hn <search_term> %
-    " }
 " }
-"
+
+
 " don't hide some symbols, see https://vi.stackexchange.com/questions/7258/how-do-i-prevent-vim-from-hiding-symbols-in-markdown-and-json/7263
 "set conceallevel=0
 "let g:vim_markdown_conceal = 0

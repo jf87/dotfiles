@@ -40,7 +40,10 @@ done
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 pip3 install --user neovim
 pip3 install --user --upgrade neovim
+pip3 install --user neovim-remote
+pip3 install --user --upgrade neovim-remote
 mkdir ~/.config
 ln -s ~/.vim ~/.config/nvim
 ln -s ~/.vimrc ~/.config/nvim/init.vim
 nvim +UpdateRemotePlugins +GoInstallBinaries +q
+# manually install tpm tmux plugins with prefix + I
