@@ -381,7 +381,7 @@
         "let g:UltiSnipsJumpForwardTrigger="<c-b>"
         "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
         inoremap <silent><expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-        let g:UltiSnipsExpandTrigger="<C-j>"
+        "let g:UltiSnipsExpandTrigger="<C-j>"
         "let g:UltiSnipsJumpForwardTrigger="<tab>"
         "let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     " }
@@ -593,7 +593,7 @@
     " vimtex
     " {
         let g:vimtex_latexmk_continuous = 1
-        let g:vimtex_quickfix_open_on_warning = 0
+        let g:vimtex_quickfix_open_on_warning = 1
         let g:vimtex_quickfix_latexlog = {
                     \ 'overfull' : 0,
                     \ 'underfull' : 0,
