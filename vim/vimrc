@@ -111,7 +111,7 @@
             Plug 'SirVer/ultisnips'
             " Snippets are separated from the engine. Add this if you want them:
             Plug 'honza/vim-snippets'
-            Plug 'ervandew/supertab'
+            "Plug 'ervandew/supertab'
         " }
 
         " Python {
@@ -381,14 +381,14 @@
         "let g:UltiSnipsJumpForwardTrigger="<c-b>"
         "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
         inoremap <silent><expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-        "let g:UltiSnipsExpandTrigger="<C-j>"
-        "let g:UltiSnipsJumpForwardTrigger="<tab>"
-        "let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+        let g:UltiSnipsExpandTrigger="<tab>"
+        let g:UltiSnipsJumpForwardTrigger="<tab>"
+        let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
     " }
     "
     " Supertab
     " {
-        let g:SuperTabDefaultCompletionType = "<c-n>"
+        "let g:SuperTabDefaultCompletionType = "<c-n>"
     " }
 
     " deoplete.{
@@ -593,7 +593,7 @@
     " vimtex
     " {
         let g:vimtex_latexmk_continuous = 1
-        let g:vimtex_quickfix_open_on_warning = 1
+        let g:vimtex_quickfix_open_on_warning = 0
         let g:vimtex_quickfix_latexlog = {
                     \ 'overfull' : 0,
                     \ 'underfull' : 0,
@@ -649,6 +649,16 @@
         endif
         if has('nvim')
             let g:vimtex_compiler_progname = 'nvr'
+            "let g:vimtex_compiler_latexmk = {
+            "\ 'options' : [
+            "\   '-pdf',
+            "\   '-pdflatex="xelatex --shell-escape %O %S"',
+            "\   '-verbose',
+            "\   '-file-line-error',
+            "\   '-synctex=1',
+            "\   '-interaction=nonstopmode',
+            "\ ]
+            "\}
             "let g:vimtex_compiler_latexmk = {
                 "\ 'backend' : 'nvim',
                 "\ 'background' : 1,
