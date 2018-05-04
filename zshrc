@@ -20,6 +20,8 @@ then
     export VISUAL=/usr/bin/vim
     # https://github.com/seebi/dircolors-solarized
     eval `dircolors /$HOME/.dir_colors/dircolors`
+    # disable capslock key
+    setxkbmap -option caps:none
 else
 
     if [[ `uname` == 'Darwin' ]]
