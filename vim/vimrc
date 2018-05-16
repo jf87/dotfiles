@@ -564,7 +564,7 @@
         "syntax sync minlines=256
         
         " Yank in vim/tmux combination
-        set clipboard=unnamed
+        set clipboard^=unnamed,unnamedplus
 
         " fix tmux neovim pane switching issue
         " https://github.com/neovim/neovim/issues/2048#issuecomment-78045837
