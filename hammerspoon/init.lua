@@ -57,79 +57,6 @@ local spotifyWasPlaying = false
 local powerSource = hs.battery.powerSource()
 
 
-------------------------
--- MenuBar
-------------------------
-
--- Get output of a bash command
-function os.capture(cmd)
-  local f = assert(io.popen(cmd, 'r'))
-  local s = assert(f:read('*a'))
-  f:close()
-  s = string.gsub(s, '^%s+', '')
-  s = string.gsub(s, '%s+$', '')
-  s = string.gsub(s, '[\n\r]+', ' ')
-  return s
-end
-
--- Reimplemented version of capture() because sometimes Lua
--- fails with "interrupted system call" when using io.popen() on OS X
--- This is ugly, don't use it! Better use hs.task
-function mCapture(cmd, raw)
-   local tmpfile = os.tmpname()
-   os.execute(cmd .. ">" .. tmpfile)
-   local f=io.open(tmpfile)
-   local s=f:read("*a")
-   f:close()
-   os.remove(tmpfile)
-   if raw then return s end
-   s = string.gsub(s, '^%s+', '')
-   s = string.gsub(s, '%s+$', '')
-   s = string.gsub(s, '[\n\r]+', ' ')
-   return s
-end
-
-function getMean(s)
-    local n, j
-    n = 0
-    j = 0
-    for i in string.gmatch(s, "%S+") do
-        j = j + 1
-        n = tonumber(i)+n
-    end
-    n = math.floor(n/j)
-    return tostring(n)
-end
-
-
--- Update the fan and temp. Needs iStats CLI tool from homebrew.
--- gem install iStats
-local function updateStats()
-  fanSpeed = mCapture("/usr/local/bin/istats fan speed | cut -c14- | sed 's/\\..*//'", false)
-  temp = mCapture("/usr/local/bin/istats cpu temp | cut -c11- | sed 's/\\..*//'", false)
-  fanSpeed = getMean(fanSpeed)
-end
-
--- Makes (and updates) the topbar menu filled with the current Space, the
--- temperature and the fan speed. The Space only updates if the space is changed
--- with the Hammerspoon shortcut (option + arrows does not work). 
-local function makeStatsMenu(calledFromWhere)
-  if statsMenu == nil then
-    statsMenu = hs.menubar.new()
-  end
-  if calledFromWhere == "spaceChange" then
-    currentSpace = tostring(spaces.currentSpace()) 
-  else
-    updateStats()
-  end
-  -- statsMenu:setTitle("Space " .. currentSpace .. " | Fan: " .. fanSpeed .. " | Temp: " .. temp)
-  statsMenu:setTitle("".. currentSpace .. " | " .. fanSpeed .. " RPM | " .. temp .. "°C")
-end
-
-
-statsMenuTimer = hs.timer.new(updateStatsInterval, makeStatsMenu)
-statsMenuTimer:start()
-
 ------------------------------------------------------------------------------
 -- ChangeResolution
 ------------------------------------------------------------------------------
@@ -786,6 +713,4 @@ end
 
 hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload_config):start()
 currentSpace = tostring(spaces.currentSpace())
-updateStats()
-makeStatsMenu()
 hs.alert.show("Config loaded")
