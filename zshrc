@@ -66,4 +66,10 @@ alias nvimtex='NVIM_LISTEN_ADDRESS=/tmp/nvim_tex.sock nvim'
 
 # increase limit of open files
 ulimit -S -n 1024
-source /opt/ros/lunar/setup.zsh
+#source /opt/ros/lunar/setup.zsh
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Applications/google-cloud-sdk/path.zsh.inc' ]; then . '/Applications/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Applications/google-cloud-sdk/completion.zsh.inc' ]; then . '/Applications/google-cloud-sdk/completion.zsh.inc'; fi
