@@ -13,7 +13,7 @@ if [ "$(uname)" == "Darwin"  ]; then
     brew install tmux
     brew install zsh
     brew install neovim/neovim/neovim
-    brew install reattach-to-user-namespace
+   #brew install reattach-to-user-namespace
     ln -s ~/dotfiles/hammerspoon ~/.hammerspoon
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     echo "linux"
@@ -48,3 +48,4 @@ ln -s ~/.vim ~/.config/nvim
 ln -s ~/.vimrc ~/.config/nvim/init.vim
 nvim +UpdateRemotePlugins +GoInstallBinaries +q
 # manually install tpm tmux plugins with prefix + I
+zprezto-update

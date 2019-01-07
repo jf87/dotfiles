@@ -47,6 +47,7 @@ hs.window.animationDuration = 0
 
 -- hotkey hyper
 local hyper = {"ctrl", "alt", "shift", "cmd"}
+require 'hyper'
 
 ------------------------
 ---- Internal state
