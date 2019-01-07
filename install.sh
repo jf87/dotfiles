@@ -38,7 +38,7 @@ setopt EXTENDED_GLOB
 for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
     ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
 done
-gIt clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 pip3 install --user neovim
 pip3 install --user --upgrade neovim
 pip3 install --user neovim-remote
@@ -46,6 +46,6 @@ pip3 install --user --upgrade neovim-remote
 mkdir ~/.config
 ln -s ~/.vim ~/.config/nvim
 ln -s ~/.vimrc ~/.config/nvim/init.vim
-nvim +UpdateRemotePlugins +GoInstallBinaries +q
+nvim +PlugInstall +UpdateRemotePlugins +GoInstallBinaries +q
 # manually install tpm tmux plugins with prefix + I
 zprezto-update
