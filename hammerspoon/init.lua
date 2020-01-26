@@ -1,3 +1,4 @@
+require("hyper")
 -- Hammerspoon config based on
 -- https://github.com/oschrenk/dotfiles/blob/master/.hammerspoon/init.lua 
 -- https://github.com/cmsj/hammerspoon-config
@@ -6,8 +7,11 @@
 -- Requirements
 -- Unsupported Spaces extension. Uses private APIs but works okay.
 -- (http://github.com/asmagill/hammerspoon_asm.undocumented)
-spaces = require("hs._asm.undocumented.spaces")
+--spaces = require("hs._asm.undocumented.spaces")
 require("hs.application")
+hotkey = require "hs.hotkey"
+window = require "hs.window"
+spaces = require "hs._asm.undocumented.spaces"
 
 --------------------------
 -- Settings
@@ -17,237 +21,35 @@ require("hs.application")
 
 local wifiInterface = "en0"
 local wifiWatcher = nil
-local workSSIDToken = "ITU++"
-local homeSSIDToken = "autobahn_5GHz"
-local homeSSIDs = {"autobahn_5GHz","autobahn", "keinkabel02", "keinkabel01" }
+local workSSIDToken = "NEC-Oa"
+local homeSSIDToken = "Tortugawifi 🐢"
+local homeSSIDs = {"Tortugawifi 🐢","autobahn", "keinkabel02", "keinkabel01" }
 local lastSSID = hs.wifi.currentNetwork()
 local homeLocation = "Home"
 local workLocation = "Work"
 
 
--- Fast User Switching
--- `id -u` to find curent id
-local personalUserId = "502"
-local workUserId     = "503"
-
 -- Define monitor names for layout purposes
 local display_laptop = "Color LCD"
 local display_monitor1 = "DELL U2711"
-local display_monitor2 = "2460"
+local display_monitor2 = "EA221WM"
 
 -- Define audio device names for headphone/speaker switching
-local headphoneDevice = "Headphones"
+local headphoneDevice = "External Headphones"
 local speakerDevice = "Scarlett 2i4 USB"
-
--- How often to update Fan and Temp
-updateStatsInterval = 20
 
 -- disable animation
 hs.window.animationDuration = 0
 
 -- hotkey hyper
 local hyper = {"ctrl", "alt", "shift", "cmd"}
-require 'hyper'
-
+--local config = require('hyper')
+--local hyper = config.k
 ------------------------
 ---- Internal state
 --------------------------
 
 local windowSizeCache = {}
-local spotifyWasPlaying = false
-local powerSource = hs.battery.powerSource()
-
-
-------------------------------------------------------------------------------
--- ChangeResolution
-------------------------------------------------------------------------------
--- Modal hotkey to change a monitors resolution
--- Also includes basic menu bar item, which is dynamically generated
--- You do have to set the resolutions you want manually, and if
--- you have multiple computers, you'll have to apply the layouts
--- appropriately
---
--- [ ] should make this it's own extension/file
--- [ ] check the menu bar item corresponding to current res
-------------------------------------------------------------------------------
---
---
-
-function getScreens()
-	screens = hs.screen.allScreens()
-	return screens
-end
-
-
--- possible resolutions for 15 MBPr
-local laptopResolutions = {
-  {w = 1440, h = 900, s = 2},
-  {w = 1680, h = 1050, s = 2},
-  {w = 1920, h = 1200, s = 2},
-  {w = 2048, h = 1280, s = 1},
-  {w = 2560, h = 1600, s = 1},
-  {w = 2880, h = 1800, s = 1}
-}
-
--- possible resolutions for 4k Dell monitor
-local desktopResolutions = {
-  -- first 1920 is for retina resolution @ 30hz
-  -- might not be neede as 2048 looks pretty good
-  {w = 1920, h = 1080, s = 2},
-  -- this 1920 is for non-retina @ 60hz
-  {w = 1920, h = 1080, s = 1},
-  {w = 2048, h = 1152, s = 2},
-  {w = 2304, h = 1296, s = 2},
-  {w = 2560, h = 1440, s = 2}
-}
-
-
-local mbairResolutions = {
-  {w = 1440, h = 900, s = 1},
-  {w = 1440, h = 900, s = 1}
-}
--- initialize variable to ultimately store the correct set of resolutions
-local resolutions = {}
-local choices = {}
-local dropdownOptions = {}
-
--- find out which set we need
-if hs.host.localizedName() == "iMac" then
-  resolutions = desktopResolutions
-elseif hs.host.localizedName() == "MacBook Pro" then
-  resolutions = laptopResolutions
-elseif hs.host.localizedName() == "MacBook Air" then
-  resolutions = mbairResolutions
-else
-  print('no resolutions available for this computer/monitor')
-  print(hs.host.localizedName())
-end
-
--- configure the modal hotkeys
--- has some entered/exit options, mainly to show/hide available options on
--- entry/exit
-function setupResModal()
-  k = hs.hotkey.modal.new('cmd-alt-ctrl', 'l')
-  k:bind('', 'escape', function() hs.alert.closeAll() k:exit() end)
-
-  -- choices table is for storing the widths to display with hs.alert later
-  -- this is necessary because possible resolutions vary based on display
-  for i = 1, #resolutions do
-    -- inserts resolutions width in to choices table so we can iterate through them easily later
-    table.insert(choices, resolutions[i].w)
-    -- also creates a table to pass to init our dropdown menu with menuitem title and callback (this is fucking ugly)
-    table.insert(dropdownOptions, {title = tostring(i) .. ": " .. tostring(choices[i]), fn = function() return processKey(i) end, checked = false })
-    k:bind({}, tostring(i), function () processKey(i) end)
-  end
-
-  -- function to display the choices as an alert
-  -- called on hotkey modal entry
-  function displayChoices()
-    for i = 1, #choices do
-      hs.alert(tostring(i) .. ": " .. choices[i], 99)
-    end
-  end
-
-  -- on modal entry, display choices
-  function k:entered() displayChoices() end
-  -- on model exit, clear all alerts
-  function k:exited() hs.alert.closeAll() end
-
-end
-
--- processes the key from modal binding
--- resolution array is also passed so we can grab the corresponding resolution
--- then calls changeRes function with hte values we want to change to
-function processKey(i)
-  -- would be cool to check the menu bar option that is currently selected,
-  -- but it seems like a bit of a pain in the ass, because I think I'd have to reinitialize
-  -- all the menubar items, since I'd have to change check to false for current,
-  -- and true for new selection
-  local res = resolutions[tonumber(i)]
-
-  hs.alert("Setting resolution to: " .. res.w .. " x " .. res.h, 5)
-  changeRes(res.w, res.h, res.s)
-
-  setResolutionDisplay(res.w)
-
-  k:exit()
-end
-
--- desktop resolutions in form {w, h, scale} to be passed to setMode
-function changeRes(w, h, s)
-	local screens = getScreens()
-	for k,v in pairs(screens) do
-		if v:name() == display_laptop then
-			v:setMode(w, h, s)
-		end
-		print(k,v)
-	end
-	--hs.screen.primaryScreen():setMode(w, h, s)
-end
-
-setupResModal()
-
--- Initializes a menubar item that displays the current resolution of display
--- And when clicked, toggles between two most commonly used resolutions
-print(resolutions[0])
-if next(resolutions) ~= nil then
-    local resolutionMenu = hs.menubar.new()
-end
--- sets title to be displayed in menubar (really doesn't have to be own func?)
-function setResolutionDisplay(w)
-  resolutionMenu:setTitle(tostring(w))
-  resolutionMenu:setMenu(dropdownOptions)
-end
-
--- When clicked, toggles through two most common resolutions by passing
--- key manually to process key function
-
--- this is kind of flawed because logic only works on desktop
--- where it toggles between gaming mode and non-gaming mode
--- maybe just make it a dropdown?
-function resolutionClicked()
-  local screen = hs.screen.primaryScreen()
-  if screen:currentMode().w == 1920 then
-    processKey("3")
-  else
-    processKey("1")
-  end
-end
-
--- sets callback and calls settitle function
-if resolutionMenu then
-  -- resolutionMenu:setClickCallback(resolutionClicked)
-  local currentRes = hs.screen.primaryScreen():currentMode().w
-  setResolutionDisplay(currentRes)
-end
-
-
-
-
-------------------------
--- Spaces
-------------------------
--- Gets a list of windows and iterates until the window title is non-empty.
--- This avoids focusing the hidden windows apparently placed on top of all
--- Google Chrome windows. It also checks if the empty title belongs to Chrome,
--- because some apps don't give any of their windows a title, and should still
--- be focused.
-local function spaceChange()
-  makeStatsMenu("spaceChange")
-  visibleWindows = hs.window.orderedWindows()
-  for i, window in ipairs(visibleWindows) do
-    if window:application():title() == "Google Chrome" then
-      if window:title() ~= "" then
-        window:focus()
-        break
-      end
-    else
-      window:focus()
-      break
-    end
-  end
-end
-
 
 ------------------------
 -- Window Managment
@@ -380,42 +182,136 @@ function focusScreen(screen)
 
 end
 
-
-
--- Clean trash
--- hs.hotkey.bind(hyper, "t", function()
---    os.execute("/bin/rm -rf ~/.Trash/*")
--- end)
-
--- Spaces FIXME this does not work with multiple screens
 --------------------------------------------------------------------------------
--- switch Spaces
-hs.hotkey.bind(hyper, '1', function()
-  spaces.changeToSpace("1", true)
-  spaceChange()
-end)
-hs.hotkey.bind(hyper, '2', function()
-  spaces.moveToSpace("2")
-  spaceChange()
-end)
-hs.hotkey.bind(hyper, '3', function()
-  spaces.moveToSpace("3")
-  spaceChange()
-end)
-hs.hotkey.bind(hyper, '4', function()
-  spaces.moveToSpace("4")
-  spaceChange()
-end)
-hs.hotkey.bind(hyper, '5', function()
-  spaces.moveToSpace("5")
-  spaceChange()
-end)
-hs.hotkey.bind(hyper, '6', function()
-  spaces.moveToSpace("6")
-  spaceChange()
-end)
 
-function moveWindowOneSpace(direction)
+
+------------------------
+-- Spaces
+------------------------
+-- Gets a list of windows and iterates until the window title is non-empty.
+-- This avoids focusing the hidden windows apparently placed on top of all
+-- Google Chrome windows. It also checks if the empty title belongs to Chrome,
+-- because some apps don't give any of their windows a title, and should still
+-- be focused.
+local function spaceChange()
+  visibleWindows = hs.window.orderedWindows()
+  for i, window in ipairs(visibleWindows) do
+    if window:application():title() == "Google Chrome" then
+      if window:title() ~= "" then
+        window:focus()
+        break
+      end
+    else
+      window:focus()
+      break
+    end
+  end
+end
+
+
+function getGoodFocusedWindow(nofull)
+   local win = window.focusedWindow()
+   if not win or not win:isStandard() then return end
+   if nofull and win:isFullScreen() then return end
+   return win
+end 
+
+function flashScreen(screen)
+   local flash=hs.canvas.new(screen:fullFrame()):appendElements({
+	 action = "fill",
+	 fillColor = { alpha = 0.25, red=1},
+	 type = "rectangle"})
+   flash:show()
+   hs.timer.doAfter(.15,function () flash:delete() end)
+end 
+
+function switchSpace(skip,dir)
+   for i=1,skip do
+      hs.eventtap.keyStroke({"ctrl"},dir)
+   end 
+end
+
+
+-- thi sees eprecated...
+function moveWindowOneSpace(dir,switch)
+   --local win = getGoodFocusedWindow(true)
+   --if not win then return end
+   --local screen=win:screen()
+   --print(screen)
+   --local uuid = screen:spacesUUID()
+   win = hs.window.focusedWindow()
+   uuid = win:screen():spacesUUID()
+   print(uuid)
+   local userSpaces=nil
+   for k,v in pairs(spaces.layout()) do
+      userSpaces=v
+      if k==uuid then break end
+   end
+   if not userSpaces then return end
+   local thisSpace=win:spaces() -- first space win appears on
+   if not thisSpace then return else thisSpace=thisSpace[1] end
+   local last=nil
+   local skipSpaces=0
+   for _, spc in ipairs(userSpaces) do
+      if spaces.spaceType(spc)~=spaces.types.user then -- skippable space
+	 skipSpaces=skipSpaces+1
+      else 			-- A good user space, check it
+	 if last and
+	    ((dir=="left"  and spc==thisSpace) or
+	     (dir=="right" and last==thisSpace))
+	 then
+	    win:spacesMoveTo(dir=="left" and last or spc)
+	    if switch then
+	       switchSpace(skipSpaces+1,dir)
+	       win:focus()
+	    end
+	    return
+	 end
+	 last=spc	 -- Haven't found it yet...
+	 skipSpaces=0
+      end 
+   end
+   flashScreen(screen)   -- Shouldn't get here, so no space found
+end
+
+
+local mouseOrigin
+local inMove=0
+-- move a window to an adjacent Space
+function moveWindowOneSpaceOld(direction)
+   local win = window.focusedWindow()
+   if not win then return end
+   local clickPoint = win:zoomButtonRect()
+   if inMove==0 then mouseOrigin = hs.mouse.getAbsolutePosition() end
+   
+   clickPoint.x = clickPoint.x + clickPoint.w + 5
+   clickPoint.y = clickPoint.y + (clickPoint.h / 2)
+   local mouseClickEvent = hs.eventtap.event.newMouseEvent(
+      hs.eventtap.event.types.leftMouseDown, clickPoint)
+   mouseClickEvent:post()
+   
+   local nextSpaceDownEvent = hs.eventtap.event.newKeyEvent(
+      {"ctrl"},direction, true)
+   nextSpaceDownEvent:post()
+   inMove=inMove+1		-- nested moves possible, ensure reentrancy
+
+   hs.timer.doAfter(.1,function()
+		       local nextSpaceUpEvent = hs.eventtap.event.newKeyEvent(
+			  {"ctrl"}, direction, false)
+		       nextSpaceUpEvent:post()
+		       -- wait to release the mouse to avoid sticky window syndrome
+		       hs.timer.doAfter(.25, 
+					function()
+					   local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(
+					      hs.eventtap.event.types.leftMouseUp, clickPoint)
+					   mouseReleaseEvent:post()
+					   inMove=math.max(0,inMove-1)
+					   if inMove==0 then hs.mouse.setAbsolutePosition(mouseOrigin) end 
+		       end)
+   end)
+end
+
+function moveWindowOneSpaceOldOld(direction)
    local mouseOrigin = hs.mouse.getAbsolutePosition()
    local win = hs.window.focusedWindow()
    local clickPoint = win:zoomButtonRect()
@@ -423,31 +319,33 @@ function moveWindowOneSpace(direction)
    clickPoint.x = clickPoint.x + clickPoint.w + 5
    clickPoint.y = clickPoint.y + (clickPoint.h / 2)
 
-   local mouseClickEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftmousedown, clickPoint)
+   local mouseClickEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseDown, clickPoint)
    mouseClickEvent:post()
-   hs.timer.usleep(150000)
+   hs.timer.usleep(350000)
 
    local nextSpaceDownEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, true)
    nextSpaceDownEvent:post()
-   hs.timer.usleep(150000)
+   hs.timer.usleep(350000)
 
    local nextSpaceUpEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, false)
    nextSpaceUpEvent:post()
-   hs.timer.usleep(150000)
+   hs.timer.usleep(350000)
 
    local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, clickPoint)
    mouseReleaseEvent:post()
-   hs.timer.usleep(150000)
+   hs.timer.usleep(350000)
 
   hs.mouse.setAbsolutePosition(mouseOrigin)
   spaceChange()
 end
 
 
-hk1 = hs.hotkey.bind(hyper, "m",
-             function() moveWindowOneSpace("right") end)
-hk2 = hs.hotkey.bind(hyper, "n",
-             function() moveWindowOneSpace("left") end)
+mash = {"ctrl", "cmd"}
+
+hk1 = hs.hotkey.bind(mash, "m",
+             function() moveWindowOneSpaceOldOld("right",true) end)
+hk2 = hs.hotkey.bind(mash, "n",
+             function() moveWindowOneSpaceOldOld("left",true) end)
 
 
 --------------------------------------------------------------------------------
@@ -461,16 +359,16 @@ hk2 = hs.hotkey.bind(hyper, "n",
 
 function enableBluetooth()
   hs.alert.show("Enabling Bluetooth")
-  os.execute("/usr/local/bin/blueutil power 1")
+  os.execute("/usr/local/bin/blueutil -p 1")
 end
 
 function disableBluetooth()
   hs.alert.show("Disabling Bluetooth")
-  os.execute("/usr/local/bin/blueutil power 0")
+  os.execute("/usr/local/bin/blueutil -p 0")
 end
 
 function bluetoothEnabled()
-  local file = assert(io.popen('/usr/local/bin/blueutil power', 'r'))
+  local file = assert(io.popen('/usr/local/bin/blueutil -p', 'r'))
   local output = file:read('*all')
   file:close()
 
@@ -517,75 +415,6 @@ hs.hotkey.bind(hyper, "v", function()
   end
 end)
 
-
-------------------------
--- Network location
-------------------------
-
-function currentNetworkLocation()
-  local file = assert(io.popen('/usr/sbin/networksetup -getcurrentlocation', 'r'))
-  local output = file:read('*all')
-  file:close()
-
-  return output:gsub("%s+", "")
-end
-
--- this function relies on a sudoers.d entry like
--- %Local  ALL=NOPASSWD: /usr/sbin/networksetup -switchtolocation "name"
-function switchNetworkLocation(name)
-  local location = currentNetworkLocation()
-  if (location ~= name) then
-    hs.alert.show("Switching location to " .. name)
-    os.execute("sudo /usr/sbin/networksetup -switchtolocation \"" .. name .. "\"")
-  end
-end
-
-
-------------------------
--- Watch network changes
-------------------------
-
-function enteredNetwork(old_ssid, new_ssid, token)
-  if (old_ssid == nil and new_ssid ~= nil) then
-    return string.find (string.lower(new_ssid), string.lower(token))
-  end
-
-  if (old_ssid ~= nil and new_ssid == nil) then
-    return false
-  end
-
-  -- significantly change wifi
-  -- checking if we more than changed network within environment
-  if (old_ssid ~= nil and new_ssid ~= nil) then
-    hs.alert.show("Changed Wifi")
-    return (not (string.find(string.lower(old_ssid), string.lower(token)) and
-                string.find(string.lower(new_ssid), string.lower(token))))
-  end
-
-  return false
-end
-
-
-function ssidChangedCallback()
-    newSSID = hs.wifi.currentNetwork()
-
-    print("ssidChangedCallback: old:"..(lastSSID or "nil").." new:"..(newSSID or "nil"))
-    if (newSSID ~= nil) then
-      if (enteredNetwork(lastSSID, newSSID, workSSIDToken)) then
-        enteredWork()
-      end
-
-      if (enteredNetwork(lastSSID, newSSID, homeSSIDToken)) then
-        enteredHome()
-      end
-    end
-
-    lastSSID = newSSID
-end
-
---wifiWatcher = hs.wifi.watcher.new(ssidChangedCallback)
---wifiWatcher:start()
-
 ------------------------
 -- Audio settings
 ------------------------
@@ -612,97 +441,11 @@ function toggle_audio_output()
         }):send()
 end
 
-hs.hotkey.bind(hyper, 'Escape', toggle_audio_output)
+hs.hotkey.bind(hyper, 'y', toggle_audio_output)
 
-function spotify_pause()
-   hs.alert.show("Pausing Spotify")
-   hs.spotify.pause()
-end
-
-function spotify_play()
-   hs.alert.show("Playing Spotify")
-   hs.spotify.play()
-end
-
-function mute()
-  local dev = hs.audiodevice.defaultOutputDevice()
-  hs.alert.show("Mute")
-  dev:setMuted(true)
-end
 
 -- no need, use function keys
 --hs.hotkey.bind(hyper, 'm', mute)
-
--- Per-device watcher to detect headphones in/out
-function audiodevwatch(dev_uid, event_name, event_scope, event_element)
-  print(string.format("dev_uid %s, event_name %s, event_scope %s, event_element %s", dev_uid, event_name, event_scope, event_element))
-  dev = hs.audiodevice.findDeviceByUID(dev_uid)
-  if event_name == 'jack' then
-    if dev:jackConnected() then
-      if spotifyWasPlaying then
-        spotify_play()
-      end
-    else
-      spotifyWasPlaying = hs.spotify.isPlaying()
-      if spotifyWasPlaying then
-        spotify_pause()
-      end
-    end
-  end
-end
-
-hs.audiodevice.current()['device']:watcherCallback(audiodevwatch):watcherStart()
-
-------------------------
--- Power settings
-------------------------
-
-function powerChanged()
-  local current = hs.battery.powerSource()
-
-  if (current ~= powerSource) then
-    powerSource = current
-    if (powerSource == "AC Power") then
-      switchedToCharger()
-    else
-      switchedToBattery()
-    end
-  end
-end
-
---hs.battery.watcher.new(powerChanged):start()
-
-
-------------------------
--- Environment settings
-------------------------
-
-function enteredHome()
-  if (bluetoothEnabled()) then
-    disableBluetooth()
-  end
-
-  switchNetworkLocation(homeLocation)
-end
-
-function enteredWork()
-  if (not bluetoothEnabled()) then
-    enableBluetooth()
-  end
-
-  switchNetworkLocation(workLocation)
-  mute()
-end
-
-function switchedToBattery()
-  hs.alert.show("Battery")
-  disableBluetooth()
-end
-
-function switchedToCharger()
-  hs.alert.show("Charging")
-end
-
 
 ------------------------
 -- Reload
@@ -713,5 +456,4 @@ function reload_config(files)
 end
 
 hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reload_config):start()
-currentSpace = tostring(spaces.currentSpace())
 hs.alert.show("Config loaded")

@@ -1,6 +1,8 @@
-"  Based on spf13.com
 " -----------------------------------------------------------------------------
-" Identify platform {
+"  vim config, originally based on spf13.com
+" vim: set sw=4 ts=4 sts=4 et tw=78 foldmarker={,} foldlevel=0 foldmethod=marker spell:
+" -----------------------------------------------------------------------------
+" Platform {
     silent function! OSX()
         return has('macunix')
     endfunction
@@ -14,27 +16,27 @@
     " figure out our config directory
     let config_dir = has("nvim") ? '~/.config/nvim' : '~/.vim'
 " }
-" Environment {
-    set background=dark     " Assume a dark background
-" }
 
-" vim-plug {
-    set nocompatible
-    if empty(glob(config_dir . '/autoload/plug.vim'))
-      silent execute '!curl -fLo ' . config_dir . '/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-      autocmd VimEnter * PlugInstall
-    endif
-    call plug#begin('~/.config/nvim/plugged')
+    " vim-plug {
+        set nocompatible
+        if empty(glob(config_dir . '/autoload/plug.vim'))
+          silent execute '!curl -fLo ' . config_dir . '/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+          autocmd VimEnter * PlugInstall
+        endif
+        call plug#begin('~/.config/nvim/plugged')
 
-    " General {
+        " General {
             " Open file at specific line
             Plug 'bogado/file-line'
             Plug 'scrooloose/nerdtree'
             " NERDTree and tabs together in Vim, painlessly
             Plug 'jistr/vim-nerdtree-tabs'
             " Collection of vim colorschemes
-            Plug 'flazz/vim-colorschemes'
-            Plug 'altercation/vim-colors-solarized'
+            "Plug 'flazz/vim-colorschemes'
+            "" switch easy between colors
+            "Plug 'felixhummel/setcolors.vim'
+            "Plug 'altercation/vim-colors-solarized'
+            Plug 'morhetz/gruvbox'
             "Plug 'spf13/vim-colors'
             Plug 'tpope/vim-surround'
             Plug 'tpope/vim-repeat'
@@ -44,21 +46,13 @@
             Plug 'jiangmiao/auto-pairs'
             " Full path fuzzy file, buffer, mru, tag, ... finder for Vim
             Plug 'ctrlpvim/ctrlp.vim'
-            "Plug 'tacahiroy/ctrlp-funky'
             "sublime text like multiple selection feature (ctrl-n)
-            Plug 'terryma/vim-multiple-cursors'
-            "Plug 'vim-scripts/sessionman.vim'
-            "Plug 'matchit.zip'
+            "Plug 'terryma/vim-multiple-cursors'
             "Lean & mean status/tabline for vim that's light as air
             Plug 'vim-airline/vim-airline'
             Plug 'vim-airline/vim-airline-themes'
             " powerline fonts for airline
             Plug 'powerline/fonts'
-            " shows open buffers in statusline
-            Plug 'bling/vim-bufferline'
-            " EasyMotion provides a much simpler way to use some motions
-            " in vim
-            Plug 'easymotion/vim-easymotion'
             " Visualize Undo-Tree
             Plug 'mbbill/undotree'
             " visually displaying indent levels in Vim
@@ -67,17 +61,12 @@
             Plug 'vim-scripts/restore_view.vim'
             " show version control differences
             Plug 'mhinz/vim-signify'
-            " easily search for, substitute, and abbreviate multiple variants of a word
-            Plug 'tpope/vim-abolish'
-            " substitute preview
-            Plug 'osyo-manga/vim-over'
             " creating own textobjects
             Plug 'kana/vim-textobj-user'
             Plug 'kana/vim-textobj-indent'
-            "use enter to select closest textobject
-            Plug 'gcmt/wildfire.vim'
+            Plug 'vimwiki/vimwiki'
         " }
-
+        "
         " Writing {
             " Lightweight auto-correction for Vim
             Plug 'reedes/vim-litecorrect'
@@ -87,24 +76,7 @@
             " Uncover usage problems in your writing
             Plug 'reedes/vim-wordy'
             Plug 'beloglazov/vim-online-thesaurus'
-            " Plug 'IngoHeimbach/spelllangidentifier', {'do' : 'make --directory=./mguesser/'}
-        " }
-
-        " General Programming {
-            "Git wrapper
-            Plug 'tpope/vim-fugitive'
-            "Create gists from current vim buffer
-            Plug 'mattn/gist-vim'
-            " comment/uncomment
-            Plug 'scrooloose/nerdcommenter'
-            "line up text, must come before markdown plugin
-            Plug 'godlygeek/tabular'
-            " different levels of paranthesis in different colors
-            Plug 'luochen1990/rainbow'
-            if executable('ctags')
-                " browse tags of current file
-                Plug 'majutsushi/tagbar'
-            endif
+            Plug 'lervag/vimtex'
         " }
 
         " Snippets & AutoComplete {
@@ -112,6 +84,25 @@
             " Snippets are separated from the engine. Add this if you want them:
             Plug 'honza/vim-snippets'
             "Plug 'ervandew/supertab'
+        " }
+
+        " General Programming {
+            "Git wrapper
+            Plug 'tpope/vim-fugitive'
+            " comment/uncomment
+            Plug 'scrooloose/nerdcommenter'
+            "line up text, must come before markdown plugin
+            Plug 'godlygeek/tabular'
+            " different levels of paranthesis in different colors
+            Plug 'luochen1990/rainbow'
+            " ctag
+            if executable('ctags')
+                " browse tags of current file
+                Plug 'majutsushi/tagbar'
+                set tags=~/mytags
+            endif
+          " Syntax Highlight
+          Plug 'w0rp/ale'
         " }
 
         " Python {
@@ -122,7 +113,7 @@
             "Plug 'vim-scripts/pythoncomplete' , {'for' : 'python'}
         " }
 
-        " Javascript {
+        " Javascript / JSON {
             Plug 'elzr/vim-json'
             Plug 'pangloss/vim-javascript', { 'for' : 'javascript'}
         " }
@@ -138,30 +129,33 @@
             Plug 'fatih/vim-go', { 'for' : 'go', 'do' : ':GoUpdateBinaries' }
         " }
         " Misc {
-            Plug 'tpope/vim-markdown'
-            Plug 'suan/vim-instant-markdown'
-            Plug 'spf13/vim-preview'
-            Plug 'tpope/vim-cucumber'
+            Plug 'godlygeek/tabular'
+            Plug 'plasticboy/vim-markdown'
+            "Plug 'suan/vim-instant-markdown'
+            "Plug 'spf13/vim-preview'
+            "Plug 'tpope/vim-cucumber'
+            " Vim syntax for TOML
             Plug 'cespare/vim-toml'
-            Plug 'quentindecock/vim-cucumber-align-pipes'
-            Plug 'saltstack/salt-vim'
-            Plug 'lervag/vimtex'
+            "Plug 'quentindecock/vim-cucumber-align-pipes'
+            "Plug 'saltstack/salt-vim'
             Plug 'christoomey/vim-tmux-navigator'
             Plug 'chrisbra/Recover.vim'
+            "VimOutliner is an outline processor
             Plug 'vimoutliner/vimoutliner'
         " }
-          Plug 'w0rp/ale'
-        if has('nvim')
-          "Plug 'neomake/neomake'
-          Plug 'Shougo/deoplete.nvim', { 'do' : ':UpdateRemotePlugins' }
-          Plug 'zchee/deoplete-jedi'
-          Plug 'zchee/deoplete-go', { 'do' : 'make' }
-          Plug 'sebdah/vim-delve'
-        else
-          Plug 'tpope/vim-sensible'
-        endif
+        " Code Completion {
+            if has('nvim')
+              "Plug 'neomake/neomake'
+              Plug 'Shougo/deoplete.nvim', { 'do' : ':UpdateRemotePlugins' }
+              Plug 'zchee/deoplete-jedi'
+              Plug 'zchee/deoplete-go', { 'do' : 'make' }
+              Plug 'sebdah/vim-delve'
+            else
+              Plug 'tpope/vim-sensible'
+            endif
+        " }
         call plug#end()
-" }
+    " }
 " General {
 
     set virtualedit=onemore             " Allow for cursor beyond last character
@@ -194,22 +188,18 @@
 " }
 "
 " Vim UI {
-    if filereadable(expand("~/.config/nvim/plugged/vim-colors-solarized/colors/solarized.vim"))
-        let g:solarized_termcolors=256
-        let g:solarized_termtrans=1
-        let g:solarized_contrast="normal"
-        let g:solarized_visibility="normal"
-        color solarized             " Load a colorscheme
-    endif
+    colorscheme gruvbox
+    let g:gruvbox_hls_cursor="blue"
+    "highlight Cursor guifg=green guibg=red ctermfg=green ctermbg=red
 
     set tabpagemax=15               " Only show 15 tabs
     set showmode                    " Display the current mode
+    "set termguicolors
+    "set cursorline                  " Highlight current line
 
-    set cursorline                  " Highlight current line
-
-    highlight clear SignColumn      " SignColumn should match background
-    highlight clear LineNr          " Current line number row will have same background color in relative mode
-    "highlight clear CursorLineNr    " Remove highlight color from current line number
+    "highlight clear SignColumn      " SignColumn should match background
+    "highlight clear LineNr          " Current line number row will have same background color in relative mode
+    "highlight clear Cursor
 
     if has('cmdline_info')
         set ruler                   " Show the ruler
@@ -218,19 +208,22 @@
                                     " Selected characters/lines in visual mode
     endif
 
-    if has('statusline')
-        set laststatus=2
+    "if has('statusline')
+        "set laststatus=2
 
-        " Broken down into easily includeable segments
-        set statusline=%<%f\                     " Filename
-        set statusline+=%w%h%m%r                 " Options
-        if !exists('g:override_spf13_bundles')
-            set statusline+=%{fugitive#statusline()} " Git Hotness
-        endif
-        set statusline+=\ [%{&ff}/%Y]            " Filetype
-        set statusline+=\ [%{getcwd()}]          " Current dir
-        set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
-    endif
+        "" Broken down into easily includeable segments
+        "set statusline=%<%f\                     " Filename
+        "set statusline+=%w%h%m%r                 " Options
+        "if !exists('g:override_spf13_bundles')
+            "set statusline+=%{fugitive#statusline()} " Git Hotness
+        "endif
+        "set statusline+=\ [%{&ff}/%Y]            " Filetype
+        "set statusline+=\ [%{getcwd()}]          " Current dir
+        "set statusline+=%=%-14.(%l,%c%V%)\ %p%%  " Right aligned file nav info
+        "set statusline+=%#warningmsg#
+        "set statusline+=%{SyntasticStatuslineFlag()}
+        "set statusline+=%*
+    "endif
 
     set backspace=indent,eol,start  " Backspace for dummies
     set linespace=0                 " No extra spaces between rows
@@ -249,37 +242,34 @@
     set foldenable                  " Auto fold code
     set list
     set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
+	" Formatting {
 
-" }
-"
-" Formatting {
+		set nowrap                      " Do not wrap long lines
+		set autoindent                  " Indent at the same level of the previous line
+		set shiftwidth=4                " Use indents of 4 spaces
+		set expandtab                   " Tabs are spaces, not tabs
+		set tabstop=4                   " An indentation every four columns
+		set softtabstop=4               " Let backspace delete indent
+		set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
+		set splitright                  " Puts new vsplit windows to the right of the current
+		set splitbelow                  " Puts new split windows to the bottom of the current
+		"set matchpairs+=<:>             " Match, to be used with %
+		set pastetoggle=<F2>           " pastetoggle (sane indentation on pastes)
+		"set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
+		"autocmd FileType go autocmd BufWritePre <buffer> Fmt
+		autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
 
-    set nowrap                      " Do not wrap long lines
-    set autoindent                  " Indent at the same level of the previous line
-    set shiftwidth=4                " Use indents of 4 spaces
-    set expandtab                   " Tabs are spaces, not tabs
-    set tabstop=4                   " An indentation every four columns
-    set softtabstop=4               " Let backspace delete indent
-    set nojoinspaces                " Prevents inserting two spaces after punctuation on a join (J)
-    set splitright                  " Puts new vsplit windows to the right of the current
-    set splitbelow                  " Puts new split windows to the bottom of the current
-    "set matchpairs+=<:>             " Match, to be used with %
-    set pastetoggle=<F2>           " pastetoggle (sane indentation on pastes)
-    "set comments=sl:/*,mb:*,elx:*/  " auto format comment blocks
-    "autocmd FileType go autocmd BufWritePre <buffer> Fmt
-    autocmd BufNewFile,BufRead *.html.twig set filetype=html.twig
+		autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
+		" preceding line best in a plugin but here for now.
 
+		autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 
-    autocmd FileType haskell,puppet,ruby,yml setlocal expandtab shiftwidth=2 softtabstop=2
-    " preceding line best in a plugin but here for now.
+		" Workaround vim-commentary for Haskell
+		autocmd FileType haskell setlocal commentstring=--\ %s
+		" Workaround broken colour highlighting in Haskell
+		autocmd FileType haskell,rust setlocal nospell
 
-    autocmd BufNewFile,BufRead *.coffee set filetype=coffee
-
-    " Workaround vim-commentary for Haskell
-    autocmd FileType haskell setlocal commentstring=--\ %s
-    " Workaround broken colour highlighting in Haskell
-    autocmd FileType haskell,rust setlocal nospell
-
+	" }
 " }
 "
 
@@ -335,7 +325,8 @@
     nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 " }
 "
-" Plugins {
+"
+" Plugins-Settings {
 "
     " Misc {
         if isdirectory(expand("~/.config/nvim/plugged/nerdtree"))
@@ -390,32 +381,42 @@
     " {
         "let g:SuperTabDefaultCompletionType = "<c-n>"
     " }
-
+    "
+    if has('nvim')
+        let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+    endif
     " deoplete.{
         " enable deoplete
-        let g:deoplete#enable_at_startup = 1
-        " add 50ms delay to autocomplete
-        let g:deoplete#auto_complete_delay = 50
-        " Use smartcase (consider capitalized, lower case in matching)
-        let g:deoplete#enable_smart_case = 1
-        " other way
-        " disable autocomplete
-        "let g:deoplete#disable_auto_complete = 1
-        "if has("gui_running")
-            "inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
-        "else
-            "inoremap <silent><expr><C-@> deoplete#mappings#manual_complete()
-        "endif
-        " Uncomment to diable autocompletion
-        " disable automatic completion
-        "let g:deoplete#disable_auto_complete = 1
-        " use leader-tab for autocomplete
-        "inoremap <silent><expr> <Leader><Tab>
-        "\ pumvisible() ? "\<C-n>" :
-        "\ deoplete#mappings#manual_complete()
-        " jedi show docstring
-        let g:deoplete#sources#jedi#show_docstring = 1
-        "let g:deoplete#max_list = 10
+        if has('nvim')
+            let g:deoplete#enable_at_startup = 1
+            " add 50ms delay to autocomplete
+            let g:deoplete#auto_complete_delay = 50
+            " Use smartcase (consider capitalized, lower case in matching)
+            let g:deoplete#enable_smart_case = 1
+
+            call deoplete#custom#source('_',  'max_menu_width', 80)
+            " other way
+            " disable autocomplete
+            "let g:deoplete#disable_auto_complete = 1
+            "if has("gui_running")
+                "inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
+            "else
+                "inoremap <silent><expr><C-@> deoplete#mappings#manual_complete()
+            "endif
+            " Uncomment to diable autocompletion
+            " disable automatic completion
+            "let g:deoplete#disable_auto_complete = 1
+            " use leader-tab for autocomplete
+            "inoremap <silent><expr> <Leader><Tab>
+            "\ pumvisible() ? "\<C-n>" :
+            "\ deoplete#mappings#manual_complete()
+            " jedi show docstring
+            let g:deoplete#sources#jedi#show_docstring = 1
+            "let g:deoplete#max_list = 10
+          call deoplete#custom#var('omni', 'input_patterns', {
+          \ 'tex': g:vimtex#re#deoplete
+          \})
+        endif
     " }
     " ctrlp {
         if isdirectory(expand("~/.config/nvim/plugged/ctrlp.vim/"))
@@ -446,13 +447,6 @@
                 \ 'fallback': s:ctrlp_fallback
             \ }
 
-            if isdirectory(expand("~/.config/nvim/plugged/ctrlp-funky/"))
-                " CtrlP extensions
-                let g:ctrlp_extensions = ['funky']
-
-                "funky
-                nnoremap <Leader>fu :CtrlPFunky<Cr>
-            endif
         endif
     "}
 
@@ -467,6 +461,9 @@
         endif
     "}
     "
+    
+    " undotree
+        nnoremap <F5> :UndotreeToggle<cr>
     " Fugitive {
         if isdirectory(expand("~/.config/nvim/plugged/vim-fugitive/"))
             nnoremap <silent> <leader>gs :Gstatus<CR>
@@ -485,52 +482,22 @@
     "}
     "
     " vim-airline {
-        " Set configuration options for the statusline plugin vim-airline.
-        " Use the powerline theme and optionally enable powerline symbols.
-        " To use the symbols , , , , , , and .in the statusline
-        " segments add the following to your .vimrc.before.local file:
-        "   let g:airline_powerline_fonts=1
-        " If the previous symbols do not render for you then install a
-        " powerline enabled font.
-
-        " See `:echo g:airline_theme_map` for some more choices
-        " Default in terminal vim is 'dark'
-        "let g:airline_powerline_fonts=1
+        let g:airline#extensions#tabline#enabled = 1
+        let g:airline#extensions#tabline#left_sep = ' '
+        let g:airline#extensions#tabline#left_alt_sep = '|'
+        let g:airline#extensions#tabline#formatter = 'default'
         " ALE output to airline
-        let g:airline#extensions#ale#enabled = 1
         if isdirectory(expand("~/.config/nvim/plugged/vim-airline-themes/"))
             if !exists('g:airline_theme')
-                let g:airline_theme = 'solarized'
-            endif
-            if !exists('g:airline_powerline_fonts')
-                " Use the default set of separators with a few customizations
-                let g:airline_left_sep='›'  " Slightly fancier than '>'
-                let g:airline_right_sep='‹' " Slightly fancier than '<'
+                "let g:airline_theme = 'solarized'
+                "let g:airline_theme = 'powerlineish'
+                let g:airline_theme = 'gruvbox'
             endif
         endif
+        "let g:airline#extensions#bufferline#enabled = 1
+        let g:airline#extensions#ale#enabled = 1
+        let g:airline#extensions#tabline#fnamemod = ':t'
     " }
-" GUI Settings {
-
-    " GVIM- (here instead of .gvimrc)
-    if has('gui_running')
-        set guioptions-=T           " Remove the toolbar
-        set lines=40                " 40 lines of text instead of 24
-        if !exists("g:spf13_no_big_font")
-            if LINUX() && has("gui_running")
-                set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
-            elseif OSX() && has("gui_running")
-                set guifont=Andale\ Mono\ Regular:h12,Menlo\ Regular:h11,Consolas\ Regular:h12,Courier\ New\ Regular:h14
-            elseif WINDOWS() && has("gui_running")
-                set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
-            endif
-        endif
-    else
-        if &term == 'xterm' || &term == 'screen'
-            set t_Co=256            " Enable 256 colors to stop the CSApprox warning and make xterm vim shine
-        endif
-        "set term=builtin_ansi       " Make arrow and other keys work
-    endif
-
 " }
 
 
@@ -556,9 +523,9 @@
         nnoremap <C-H> <C-W><C-H>
 
         " Speed up highlighting
-        set nocursorcolumn
-        set nocursorline
-        set norelativenumber
+        "set nocursorcolumn
+        "set nocursorline
+        "set norelativenumber
         " color to col 128
         "set synmaxcol=128
         "syntax sync minlines=256
@@ -583,16 +550,17 @@
     " VimWiki
     " {
         let wiki = {}
-        let g:vimwikidir = $HOME . "/dropbox/sync/vimwiki"
+        let g:vimwikidir = $HOME . "/Dropbox/Apps/VimWiki"
         let wiki.path = g:vimwikidir
-        let g:vimwiki_list=[wiki]
-        "let g:vimwiki_list = [{'path': '~/dropbox/sync/vimwiki',
-                       "\ 'syntax': 'markdown', 'ext': '.md'}]
+        "let g:vimwiki_list=[wiki]
+        let g:vimwiki_list = [{'path': '~/Dropbox/Apps/VimWiki',
+                       \ 'syntax': 'markdown', 'ext': '.md'}]
     " }
 
     " vimtex
     " {
         let g:vimtex_latexmk_continuous = 1
+        let g:vimtex_compiler_latexmk = { 'options': [ '-shell-escape' ]}
         let g:vimtex_quickfix_open_on_warning = 0
         let g:vimtex_quickfix_latexlog = {
                     \ 'overfull' : 0,
@@ -620,82 +588,17 @@
               \ }
               \]
         " Mac OS
+        let g:vimtex_view_method = 'skim'
         if OSX()
             let g:vimtex_view_method = 'skim'
-            "let g:vimtex_view_general_viewer = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-            "let g:vimtex_view_general_options = '-r @line @pdf @tex'
-            ""let g:vimtex_view_general_options_latexmk = '-r 1'
-            "function! UpdateSkim(status)
-              "if !a:status | return | endif
-
-              "let l:out = b:vimtex.out()
-              "let l:cmd = [g:vimtex_view_general_viewer, '-r']
-              "if !empty(system('pgrep Skim'))
-                "call extend(l:cmd, ['-g'])
-              "endif
-              "if has('nvim')
-                "call jobstart(l:cmd + [line('.'), l:out])
-              "elseif has('job')
-                "call job_start(l:cmd + [line('.'), l:out])
-              "else
-                "call system(join(l:cmd + [line('.'), shellescape(l:out)], ' '))
-              "endif
-            "endfunction
-            " This adds a callback hook that updates Skim after compilation
-            "let g:vimtex_latexmk_callback_hooks = ['UpdateSkim']
         " Linux
         elseif LINUX()
             let g:vimtex_view_method = 'zathura'
         endif
         if has('nvim')
             let g:vimtex_compiler_progname = 'nvr'
-            "let g:vimtex_compiler_latexmk = {
-            "\ 'options' : [
-            "\   '-pdf',
-            "\   '-pdflatex="xelatex --shell-escape %O %S"',
-            "\   '-verbose',
-            "\   '-file-line-error',
-            "\   '-synctex=1',
-            "\   '-interaction=nonstopmode',
-            "\ ]
-            "\}
-            "let g:vimtex_compiler_latexmk = {
-                "\ 'backend' : 'nvim',
-                "\ 'background' : 1,
-                "\ 'build_dir' : '',
-                "\ 'callback' : 1,
-                "\ 'continuous' : 1,
-                "\ 'executable' : 'latexmk',
-                "\ 'options' : [
-                "\   '-pdf',
-                "\   '-verbose',
-                "\   '-shell-escape',
-                "\   '-file-line-error',
-                "\   '-synctex=1',
-                "\   '-interaction=nonstopmode',
-                "\ ],
-                "\}
         endif
 
-    " deoplete
-    " {
-        " enable deoplete for latex
-        if !exists('g:deoplete#omni_patterns')
-          let g:deoplete#omni_patterns = {}
-        endif
-
-        let g:deoplete#omni_patterns.tex =
-            \ '\v\\%('
-            \ . '\a*cite\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-            \ . '|\a*ref%(\s*\{[^}]*|range\s*\{[^,}]*%(}\{)?)'
-            \ . '|hyperref\s*\[[^]]*'
-            \ . '|includegraphics\*?%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-            \ . '|%(include%(only)?|input)\s*\{[^}]*'
-            \ . '|\a*(gls|Gls|GLS)(pl)?\a*%(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
-            \ . '|includepdf%(\s*\[[^]]*\])?\s*\{[^}]*'
-            \ . '|includestandalone%(\s*\[[^]]*\])?\s*\{[^}]*'
-            \ . ')\m'
-    " }
 
     " ALE
     " {
@@ -726,10 +629,6 @@
         " autodectect language
         "map <F6> :'{,'}SpellLangIdentify setlocal spell<CR>:setl spl<CR>
 
-        " Statusline
-        set statusline+=%#warningmsg#
-        "set statusline+=%{SyntasticStatuslineFlag()}
-        set statusline+=%*
     " }
 
 " }
@@ -761,8 +660,11 @@
 
 " don't hide some symbols, see https://vi.stackexchange.com/questions/7258/how-do-i-prevent-vim-from-hiding-symbols-in-markdown-and-json/7263
 "set conceallevel=0
-"let g:vim_markdown_conceal = 0
-au BufRead,BufNewFile *.md set filetype=markdown
+"let g:vim_markdown_conceal = 1
+"au BufRead,BufNewFile *.md set filetype=markdown
+autocmd BufEnter,BufRead,BufNewFile,BufReadPost *.md set filetype=markdown
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
+let g:markdown_minlines = 100
 filetype on
 filetype plugin on
 filetype indent on

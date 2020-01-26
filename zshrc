@@ -73,3 +73,14 @@ if [ -f '/Applications/google-cloud-sdk/path.zsh.inc' ]; then . '/Applications/g
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Applications/google-cloud-sdk/completion.zsh.inc' ]; then . '/Applications/google-cloud-sdk/completion.zsh.inc'; fi
+
+export JAVA_HOME="JAVA_HOME=/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+
+alias pyconda="/usr/local/miniconda3/bin/python"
+alias condainit='export PATH="/usr/local/miniconda3/bin:$PATH"'
+alias condaexit='source /etc/profile'
+. /usr/local/miniconda3/etc/profile.d/conda.sh
