@@ -140,8 +140,10 @@
             "Plug 'saltstack/salt-vim'
             Plug 'christoomey/vim-tmux-navigator'
             Plug 'chrisbra/Recover.vim'
-            "VimOutliner is an outline processor
+            " VimOutliner is an outline processor
             Plug 'vimoutliner/vimoutliner'
+            " todo.txt syntax and shortcuts
+            Plug 'freitass/todo.txt-vim'
         " }
         " Code Completion {
             if has('nvim')
@@ -560,8 +562,18 @@
     " vimtex
     " {
         let g:vimtex_latexmk_continuous = 1
-        let g:vimtex_compiler_latexmk = { 'options': [ '-shell-escape' ]}
-        let g:vimtex_quickfix_open_on_warning = 0
+        let g:vimtex_compiler_latexmk = {
+        \ 'options' : [
+        \   '-pdf',
+        \   '-pdflatex="xelatex --shell-escape %O %S"',
+        \   '-verbose',
+        \   '-file-line-error',
+        \   '-synctex=1',
+        \   '-interaction=nonstopmode',
+        \ ]
+        \}
+        "let g:vimtex_compiler_latexmk = { 'options': [ '-shell-escape' ]}
+        "let g:vimtex_quickfix_open_on_warning = 0
         let g:vimtex_quickfix_latexlog = {
                     \ 'overfull' : 0,
                     \ 'underfull' : 0,
@@ -602,10 +614,17 @@
 
     " ALE
     " {
-        let g:ale_fixers = {
-        \   'python': ['yapf'],
-        \}
-    " }
+        let g:ale_lint_on_enter = 0
+        let g:ale_lint_on_text_changed = 'never'
+        let g:ale_echo_msg_error_str = 'E'
+        let g:ale_echo_msg_warning_str = 'W'
+        let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+        let g:ale_fixers = {'python': ['black', 'isort']}
+        let b:ale_fix_on_save = 1
+    "let g:ale_fixers = {
+        "\   'python': ['black'],
+        "\}
+    "" }
 
     " mixed
     " {

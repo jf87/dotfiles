@@ -5,6 +5,7 @@ ln -s -f ~/dotfiles/zpreztorc ~/.zpreztorc
 ln -s -f ~/dotfiles/zshrc ~/.zshrc
 ln -s -f ~/dotfiles/ctags ~/ctags
 ln -s -f ~/dotfiles/vim/vimrc ~/.vimrc
+ln -s ~/dotfiles/flake8 ~/.flake8
 if [ "$(uname)" == "Darwin"  ]; then
     brew update
     brew install python3
