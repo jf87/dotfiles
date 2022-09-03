@@ -12,7 +12,7 @@ fi
 # Customize to your needs...
 
 #force 256 colors
-alias tmux='tmux -2'
+#alias tmux='tmux -2'
 
 if [[ `uname` == 'Linux' ]]
 then
@@ -72,15 +72,26 @@ if [ -f '/Applications/google-cloud-sdk/path.zsh.inc' ]; then . '/Applications/g
 # The next line enables shell command completion for gcloud.
 if [ -f '/Applications/google-cloud-sdk/completion.zsh.inc' ]; then . '/Applications/google-cloud-sdk/completion.zsh.inc'; fi
 
-export JAVA_HOME="JAVA_HOME=/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/"
+#export JAVA_HOME="JAVA_HOME=/Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+#[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
 
 alias pyconda="/usr/local/miniconda3/bin/python"
 alias condainit='export PATH="/usr/local/miniconda3/bin:$PATH"'
 alias condaexit='source /etc/profile'
+
+
+alias nbstrip_jq="jq --indent 1 \
+    '(.cells[] | select(has(\"outputs\")) | .outputs) = []  \
+    | (.cells[] | select(has(\"execution_count\")) | .execution_count) = null  \
+    | .metadata = {\"language_info\": {\"name\": \"python\", \"pygments_lexer\": \"ipython3\"}} \
+    | .cells[].metadata = {} \
+    '"
+
+
+
 #. /usr/local/miniconda3/etc/profile.d/conda.sh
 
 # >>> conda initialize >>>
@@ -97,3 +108,5 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
+export PATH="/usr/local/opt/mysql@5.7/bin:$PATH"
+export PATH="/usr/local/opt/mysql@5.7/bin:$PATH"

@@ -11,7 +11,7 @@ require("hyper")
 require("hs.application")
 hotkey = require "hs.hotkey"
 window = require "hs.window"
-spaces = require "hs._asm.undocumented.spaces"
+-- spaces = require "hs._asm.undocumented.spaces"
 
 --------------------------
 -- Settings
@@ -193,160 +193,160 @@ end
 -- Google Chrome windows. It also checks if the empty title belongs to Chrome,
 -- because some apps don't give any of their windows a title, and should still
 -- be focused.
-local function spaceChange()
-  visibleWindows = hs.window.orderedWindows()
-  for i, window in ipairs(visibleWindows) do
-    if window:application():title() == "Google Chrome" then
-      if window:title() ~= "" then
-        window:focus()
-        break
-      end
-    else
-      window:focus()
-      break
-    end
-  end
-end
-
-
-function getGoodFocusedWindow(nofull)
-   local win = window.focusedWindow()
-   if not win or not win:isStandard() then return end
-   if nofull and win:isFullScreen() then return end
-   return win
-end 
-
-function flashScreen(screen)
-   local flash=hs.canvas.new(screen:fullFrame()):appendElements({
-	 action = "fill",
-	 fillColor = { alpha = 0.25, red=1},
-	 type = "rectangle"})
-   flash:show()
-   hs.timer.doAfter(.15,function () flash:delete() end)
-end 
-
-function switchSpace(skip,dir)
-   for i=1,skip do
-      hs.eventtap.keyStroke({"ctrl"},dir)
-   end 
-end
-
-
--- thi sees eprecated...
-function moveWindowOneSpace(dir,switch)
-   --local win = getGoodFocusedWindow(true)
-   --if not win then return end
-   --local screen=win:screen()
-   --print(screen)
-   --local uuid = screen:spacesUUID()
-   win = hs.window.focusedWindow()
-   uuid = win:screen():spacesUUID()
-   print(uuid)
-   local userSpaces=nil
-   for k,v in pairs(spaces.layout()) do
-      userSpaces=v
-      if k==uuid then break end
-   end
-   if not userSpaces then return end
-   local thisSpace=win:spaces() -- first space win appears on
-   if not thisSpace then return else thisSpace=thisSpace[1] end
-   local last=nil
-   local skipSpaces=0
-   for _, spc in ipairs(userSpaces) do
-      if spaces.spaceType(spc)~=spaces.types.user then -- skippable space
-	 skipSpaces=skipSpaces+1
-      else 			-- A good user space, check it
-	 if last and
-	    ((dir=="left"  and spc==thisSpace) or
-	     (dir=="right" and last==thisSpace))
-	 then
-	    win:spacesMoveTo(dir=="left" and last or spc)
-	    if switch then
-	       switchSpace(skipSpaces+1,dir)
-	       win:focus()
-	    end
-	    return
-	 end
-	 last=spc	 -- Haven't found it yet...
-	 skipSpaces=0
-      end 
-   end
-   flashScreen(screen)   -- Shouldn't get here, so no space found
-end
-
-
-local mouseOrigin
-local inMove=0
--- move a window to an adjacent Space
-function moveWindowOneSpaceOld(direction)
-   local win = window.focusedWindow()
-   if not win then return end
-   local clickPoint = win:zoomButtonRect()
-   if inMove==0 then mouseOrigin = hs.mouse.getAbsolutePosition() end
-   
-   clickPoint.x = clickPoint.x + clickPoint.w + 5
-   clickPoint.y = clickPoint.y + (clickPoint.h / 2)
-   local mouseClickEvent = hs.eventtap.event.newMouseEvent(
-      hs.eventtap.event.types.leftMouseDown, clickPoint)
-   mouseClickEvent:post()
-   
-   local nextSpaceDownEvent = hs.eventtap.event.newKeyEvent(
-      {"ctrl"},direction, true)
-   nextSpaceDownEvent:post()
-   inMove=inMove+1		-- nested moves possible, ensure reentrancy
-
-   hs.timer.doAfter(.1,function()
-		       local nextSpaceUpEvent = hs.eventtap.event.newKeyEvent(
-			  {"ctrl"}, direction, false)
-		       nextSpaceUpEvent:post()
-		       -- wait to release the mouse to avoid sticky window syndrome
-		       hs.timer.doAfter(.25, 
-					function()
-					   local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(
-					      hs.eventtap.event.types.leftMouseUp, clickPoint)
-					   mouseReleaseEvent:post()
-					   inMove=math.max(0,inMove-1)
-					   if inMove==0 then hs.mouse.setAbsolutePosition(mouseOrigin) end 
-		       end)
-   end)
-end
-
-function moveWindowOneSpaceOldOld(direction)
-   local mouseOrigin = hs.mouse.getAbsolutePosition()
-   local win = hs.window.focusedWindow()
-   local clickPoint = win:zoomButtonRect()
-
-   clickPoint.x = clickPoint.x + clickPoint.w + 5
-   clickPoint.y = clickPoint.y + (clickPoint.h / 2)
-
-   local mouseClickEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseDown, clickPoint)
-   mouseClickEvent:post()
-   hs.timer.usleep(350000)
-
-   local nextSpaceDownEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, true)
-   nextSpaceDownEvent:post()
-   hs.timer.usleep(350000)
-
-   local nextSpaceUpEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, false)
-   nextSpaceUpEvent:post()
-   hs.timer.usleep(350000)
-
-   local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, clickPoint)
-   mouseReleaseEvent:post()
-   hs.timer.usleep(350000)
-
-  hs.mouse.setAbsolutePosition(mouseOrigin)
-  spaceChange()
-end
-
-
-mash = {"ctrl", "cmd"}
-
-hk1 = hs.hotkey.bind(mash, "m",
-             function() moveWindowOneSpaceOldOld("right",true) end)
-hk2 = hs.hotkey.bind(mash, "n",
-             function() moveWindowOneSpaceOldOld("left",true) end)
-
+-- local function spaceChange()
+--   visibleWindows = hs.window.orderedWindows()
+--   for i, window in ipairs(visibleWindows) do
+--     if window:application():title() == "Google Chrome" then
+--       if window:title() ~= "" then
+--         window:focus()
+--         break
+--       end
+--     else
+--       window:focus()
+--       break
+--     end
+--   end
+-- end
+--
+--
+-- function getGoodFocusedWindow(nofull)
+--    local win = window.focusedWindow()
+--    if not win or not win:isStandard() then return end
+--    if nofull and win:isFullScreen() then return end
+--    return win
+-- end
+--
+-- function flashScreen(screen)
+--    local flash=hs.canvas.new(screen:fullFrame()):appendElements({
+-- 	 action = "fill",
+-- 	 fillColor = { alpha = 0.25, red=1},
+-- 	 type = "rectangle"})
+--    flash:show()
+--    hs.timer.doAfter(.15,function () flash:delete() end)
+-- end
+--
+-- function switchSpace(skip,dir)
+--    for i=1,skip do
+--       hs.eventtap.keyStroke({"ctrl"},dir)
+--    end
+-- end
+--
+--
+-- -- thi sees eprecated...
+-- function moveWindowOneSpace(dir,switch)
+--    --local win = getGoodFocusedWindow(true)
+--    --if not win then return end
+--    --local screen=win:screen()
+--    --print(screen)
+--    --local uuid = screen:spacesUUID()
+--    win = hs.window.focusedWindow()
+--    uuid = win:screen():spacesUUID()
+--    print(uuid)
+--    local userSpaces=nil
+--    for k,v in pairs(spaces.layout()) do
+--       userSpaces=v
+--       if k==uuid then break end
+--    end
+--    if not userSpaces then return end
+--    local thisSpace=win:spaces() -- first space win appears on
+--    if not thisSpace then return else thisSpace=thisSpace[1] end
+--    local last=nil
+--    local skipSpaces=0
+--    for _, spc in ipairs(userSpaces) do
+--       if spaces.spaceType(spc)~=spaces.types.user then -- skippable space
+-- 	 skipSpaces=skipSpaces+1
+--       else 			-- A good user space, check it
+-- 	 if last and
+-- 	    ((dir=="left"  and spc==thisSpace) or
+-- 	     (dir=="right" and last==thisSpace))
+-- 	 then
+-- 	    win:spacesMoveTo(dir=="left" and last or spc)
+-- 	    if switch then
+-- 	       switchSpace(skipSpaces+1,dir)
+-- 	       win:focus()
+-- 	    end
+-- 	    return
+-- 	 end
+-- 	 last=spc	 -- Haven't found it yet...
+-- 	 skipSpaces=0
+--       end
+--    end
+--    flashScreen(screen)   -- Shouldn't get here, so no space found
+-- end
+--
+--
+-- local mouseOrigin
+-- local inMove=0
+-- -- move a window to an adjacent Space
+-- function moveWindowOneSpaceOld(direction)
+--    local win = window.focusedWindow()
+--    if not win then return end
+--    local clickPoint = win:zoomButtonRect()
+--    if inMove==0 then mouseOrigin = hs.mouse.getAbsolutePosition() end
+--
+--    clickPoint.x = clickPoint.x + clickPoint.w + 5
+--    clickPoint.y = clickPoint.y + (clickPoint.h / 2)
+--    local mouseClickEvent = hs.eventtap.event.newMouseEvent(
+--       hs.eventtap.event.types.leftMouseDown, clickPoint)
+--    mouseClickEvent:post()
+--
+--    local nextSpaceDownEvent = hs.eventtap.event.newKeyEvent(
+--       {"ctrl"},direction, true)
+--    nextSpaceDownEvent:post()
+--    inMove=inMove+1		-- nested moves possible, ensure reentrancy
+--
+--    hs.timer.doAfter(.1,function()
+-- 		       local nextSpaceUpEvent = hs.eventtap.event.newKeyEvent(
+-- 			  {"ctrl"}, direction, false)
+-- 		       nextSpaceUpEvent:post()
+-- 		       -- wait to release the mouse to avoid sticky window syndrome
+-- 		       hs.timer.doAfter(.25,
+-- 					function()
+-- 					   local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(
+-- 					      hs.eventtap.event.types.leftMouseUp, clickPoint)
+-- 					   mouseReleaseEvent:post()
+-- 					   inMove=math.max(0,inMove-1)
+-- 					   if inMove==0 then hs.mouse.setAbsolutePosition(mouseOrigin) end
+-- 		       end)
+--    end)
+-- end
+--
+-- function moveWindowOneSpaceOldOld(direction)
+--    local mouseOrigin = hs.mouse.getAbsolutePosition()
+--    local win = hs.window.focusedWindow()
+--    local clickPoint = win:zoomButtonRect()
+--
+--    clickPoint.x = clickPoint.x + clickPoint.w + 5
+--    clickPoint.y = clickPoint.y + (clickPoint.h / 2)
+--
+--    local mouseClickEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseDown, clickPoint)
+--    mouseClickEvent:post()
+--    hs.timer.usleep(350000)
+--
+--    local nextSpaceDownEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, true)
+--    nextSpaceDownEvent:post()
+--    hs.timer.usleep(350000)
+--
+--    local nextSpaceUpEvent = hs.eventtap.event.newKeyEvent({"ctrl"}, direction, false)
+--    nextSpaceUpEvent:post()
+--    hs.timer.usleep(350000)
+--
+--    local mouseReleaseEvent = hs.eventtap.event.newMouseEvent(hs.eventtap.event.types.leftMouseUp, clickPoint)
+--    mouseReleaseEvent:post()
+--    hs.timer.usleep(350000)
+--
+--   hs.mouse.setAbsolutePosition(mouseOrigin)
+--   spaceChange()
+-- end
+--
+--
+-- mash = {"ctrl", "cmd"}
+--
+-- hk1 = hs.hotkey.bind(mash, "m",
+--              function() moveWindowOneSpaceOldOld("right",true) end)
+-- hk2 = hs.hotkey.bind(mash, "n",
+--              function() moveWindowOneSpaceOldOld("left",true) end)
+--
 
 --------------------------------------------------------------------------------
 
