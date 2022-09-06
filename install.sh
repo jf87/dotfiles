@@ -8,13 +8,9 @@ ln -s -f ~/dotfiles/vim/vimrc ~/.vimrc
 ln -s ~/dotfiles/flake8 ~/.flake8
 if [ "$(uname)" == "Darwin"  ]; then
     brew update
-    brew install python3
-    brew install vim
-    brew install go
-    brew install tmux
-    brew install zsh
-    brew install neovim/neovim/neovim
-   #brew install reattach-to-user-namespace
+    brew install python3 node tmux zsh neovim vim go
+    # brew install reattach-to-user-namespace
+    # not needed anymore in newer tmux versions
     ln -s ~/dotfiles/hammerspoon ~/.hammerspoon
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux"  ]; then
     echo "linux"
@@ -40,8 +36,8 @@ for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
     ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
 done
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-pip3 install --user neovim
-pip3 install --user --upgrade neovim
+pip3 install --user pynvim
+pip3 install --user --upgrade pynvim
 pip3 install --user neovim-remote
 pip3 install --user --upgrade neovim-remote
 mkdir ~/.config

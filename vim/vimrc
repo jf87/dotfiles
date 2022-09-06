@@ -117,7 +117,8 @@
             Plug 'gorodinskiy/vim-coloresque' , {'for' : ['html', 'css']}
         " }
         " Go Lang {
-            Plug 'fatih/vim-go', { 'for' : 'go', 'do' : ':GoUpdateBinaries' }
+            "Plug 'fatih/vim-go', { 'for' : 'go', 'do' : ':GoUpdateBinaries' }
+            Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
         " }
         " Misc {
             Plug 'godlygeek/tabular'

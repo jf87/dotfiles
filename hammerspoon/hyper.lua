@@ -1,183 +1,125 @@
-print([[
+-- -- A global variable for the Hyper Mode
+-- hyper = hs.hotkey.modal.new({}, 'F17')
+--
+--
+-- -- Bind the Hyper key
+-- f18 = hs.hotkey.bind({}, 'F18', enterHyperMode, exitHyperMode)
 
+-- HYPER
+--
+-- Hyper is a hyper shortcut modal.
+--
+-- Feel free to modify... I use karabiner-elements.app on my laptop and QMK on
+-- my mech keyboards to bind a single key to `F19`, which fires all this
+-- Hammerspoon-powered OSX automation.
+--
+-- I chiefly use it to launch applications quickly from a single press,
+-- although I also use it to create "universal" local bindings inspired by
+-- Shawn Blanc's OopsieThings.
+-- https://thesweetsetup.com/oopsiethings-applescript-for-things-on-mac/
+--
+-- Optional:
+-- Hyper hooks into Headspace's block lists. If you configure a space using
+-- Headspace, it'll block launching apps that are currently on the blocked
+-- lists via hs.settings.
 
-HYPER
+local hyper = hs.hotkey.modal.new({}, nil)
 
-## install
+-- hyper.pressed = function()
+--   hyper.triggered = false
+--   hyper:enter()
+-- end
+--
+-- hyper.released = function()
+--   hyper:exit()
+--   if not hyper.triggered then
+-- 	  hs.eventtap.keyStroke({}, 'ESCAPE')
+-- end
 
-Use karabiner-elements to bind capslock to F18
-
-install hammerspoon
-
-save this file as ~/.hammerspoon/hyper.lua
-
-add `require 'hyper'` to ~/.hammerspoon/init.lua
-
-## use
-
-press capslock by itself to send escape.
-
-or use it as a modifier:
-
-It acts like command+option+ctrl+shift. All
-the modifiers at once.
-
-It's hard to type all the modifiers at once, so
-app keyboard shortcuts almost never require you
-to.
-
-But it's still allowed in set-your-own-shortcut
-fields!
-
-You now have an extra modifier key _and_ an
-extra escape key. Go nuts.
-]])
-
--- A variable for the Hyper Mode
-local k = hs.hotkey.modal.new({}, 'F17')
-
--- All of the keys, from here:
--- https://github.com/Hammerspoon/hammerspoon/blob/f3446073f3e58bba0539ff8b2017a65b446954f7/extensions/keycodes/internal.m
--- except with ' instead of " (not sure why but it didn't work otherwise)
--- and the function keys greater than F12 removed.
-local keys = {
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-  "0",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "`",
-  "=",
-  "-",
-  "]",
-  "[",
-  "\'",
-  ";",
-  "\\",
-  ",",
-  "/",
-  ".",
-  "§",
-  "f1",
-  "f2",
-  "f3",
-  "f4",
-  "f5",
-  "f6",
-  "f7",
-  "f8",
-  "f9",
-  "f10",
-  "f11",
-  "f12",
-  "pad.",
-  "pad*",
-  "pad+",
-  "pad/",
-  "pad-",
-  "pad=",
-  "pad0",
-  "pad1",
-  "pad2",
-  "pad3",
-  "pad4",
-  "pad5",
-  "pad6",
-  "pad7",
-  "pad8",
-  "pad9",
-  "padclear",
-  "padenter",
-  "return",
-  "tab",
-  "space",
-  "delete",
-  "help",
-  "home",
-  "pageup",
-  "forwarddelete",
-  "end",
-  "pagedown",
-  "left",
-  "right",
-  "down",
-  "up"
-}
-
-local printIsdown = function(b) return b and 'down' or 'up' end
-
--- sends a key event with all modifiers
--- bool -> string -> void -> side effect
-local hyper = function(isdown)
-  return function(key)
-    return function()
-      k.triggered = true
-      local event = hs.eventtap.event.newKeyEvent(
-	{'cmd', 'alt', 'shift', 'ctrl'},
-	key, 
-	isdown
-      )
-      event:post()
-    end
-  end
-end
-
-local hyperDown = hyper(true)
-local hyperUp = hyper(false)
-
--- actually bind a key
-local hyperBind = function(key)
-  k:bind('', key, msg, hyperDown(key), hyperUp(key), nil)
-end
-
--- bind all the keys in the huge keys table
-for index, key in pairs(keys) do hyperBind(key) end
 
 -- Enter Hyper Mode when F18 (Hyper/Capslock) is pressed
-local pressedF18 = function()
-  k.triggered = false
-  k:enter()
+function enterHyperMode()
+  hyper.triggered = false
+  hyper:enter()
 end
-
+--
 -- Leave Hyper Mode when F18 (Hyper/Capslock) is pressed,
---   send ESCAPE if no other keys are pressed.
-local releasedF18 = function()
-  k:exit()
-  if not k.triggered then
+-- send ESCAPE if no other keys are pressed.
+function exitHyperMode()
+  hyper:exit()
+  if not hyper.triggered then
     hs.eventtap.keyStroke({}, 'ESCAPE')
   end
 end
 
--- Bind the Hyper key
-local f18 = hs.hotkey.bind({}, 'F18', pressedF18, releasedF18)
+
+-- Set the key you want to be HYPER to F19 in karabiner or keyboard
+-- Bind the Hyper key to the hammerspoon modal
+hs.hotkey.bind({}, 'F18', enterHyperMode, exitHyperMode)
+
+hyper.allowed = function(app)
+  if app.tags then
+    if hs.settings.get("only") then
+      return hs.fnutils.some(hs.settings.get("only"), function(tag)
+        return hs.fnutils.contains(app.tags, tag)
+      end)
+    else
+      if hs.settings.get("never") then
+        return hs.fnutils.every(hs.settings.get("never"), function(tag)
+          return not hs.fnutils.contains(app.tags, tag)
+        end)
+      end
+    end
+  end
+  return true
+end
+
+hyper.launch = function(app)
+  if hyper.allowed(app) then
+    hs.application.launchOrFocusByBundleID(app.bundleID)
+  else
+    hs.notify.show("Blocked " .. app.bundleID, "You have to switch headspaces", "")
+  end
+end
+
+-- Expects a configuration table with an applications key that has the
+-- following form:
+-- config_table.applications = {
+--   ['com.culturedcode.ThingsMac'] = {
+--     bundleID = 'com.culturedcode.ThingsMac',
+--     hyper_key = 't',
+--     tags = {'#planning', '#review'},
+--     local_bindings = {',', '.'}
+--   },
+-- }
+hyper.start = function(config_table)
+  -- Use the hyper key with the application config to use the `hyper_key`
+  for _, app in pairs(config_table.applications) do
+    -- Apps that I want to jump to
+    if app.hyper_key then
+      hyper:bind({}, app.hyper_key, function() hyper.launch(app); end)
+    end
+
+    -- I use hyper to power some shortcuts in different apps If the app is closed
+    -- and I press the shortcut, open the app and send the shortcut, otherwise
+    -- just send the shortcut.
+    if app.local_bindings then
+      for _, key in pairs(app.local_bindings) do
+        hyper:bind({}, key, nil, function()
+          if hs.application.find(app.bundleID) then
+            hs.eventtap.keyStroke({'cmd','alt','shift','ctrl'}, key)
+          else
+            hyper.launch(app)
+            hs.timer.waitWhile(
+              function() return hs.application.find(app.bundleID) == nil end,
+              function()
+                hs.eventtap.keyStroke({'cmd','alt','shift','ctrl'}, key)
+              end)
+          end
+        end)
+      end
+    end
+  end
+end
+
+return hyper
