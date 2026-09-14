@@ -43,7 +43,6 @@ cask "neovide"
 cask "textmate"
 cask "omnidisksweeper"
 cask "tailscale-app"
-cask "surfshark"
 
 # --- Writing / LaTeX ---
 cask "mactex-no-gui"
@@ -58,12 +57,6 @@ cask "dropbox"
 cask "google-drive"
 cask "notion"
 cask "claude"
-cask "microsoft-word"
-cask "microsoft-excel"
-cask "microsoft-powerpoint"
-cask "microsoft-outlook"
-cask "microsoft-teams"
-cask "webex"
 
 # --- Communication, media ---
 cask "signal"
