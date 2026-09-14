@@ -8,7 +8,8 @@ if ! command -v brew >/dev/null 2>&1; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-brew bundle --file "$DOT/Brewfile"
+# Don't stop the whole setup if a single app fails to install
+brew bundle --file "$DOT/Brewfile" || echo "WARNING: some Brewfile entries failed (see above); continuing setup."
 
 # Symlinks
 link() { mkdir -p "$(dirname "$2")"; ln -sfn "$DOT/$1" "$2"; }
@@ -40,6 +41,11 @@ fi
 
 # Python tools
 uv tool install --upgrade neovim-remote
+
+# Claude Code CLI (native installer, auto-updates, installs to ~/.local/bin)
+if [[ ! -x "$HOME/.local/bin/claude" ]]; then
+    curl -fsSL https://claude.ai/install.sh | bash
+fi
 
 # Caps Lock -> F18 (hyper key for Hammerspoon)
 cp "$DOT/com.local.KeyRemapping.plist" "$HOME/Library/LaunchAgents/"
