@@ -10,23 +10,14 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 brew bundle --file "$DOT/Brewfile"
 
-# Prezto
-if [[ ! -d "$HOME/.zprezto" ]]; then
-    git clone --recursive https://github.com/sorin-ionescu/prezto.git "$HOME/.zprezto"
-fi
-for rc in zshenv zprofile zlogin zlogout; do
-    ln -sfn "$HOME/.zprezto/runcoms/$rc" "$HOME/.$rc"
-done
-
 # Symlinks
 link() { mkdir -p "$(dirname "$2")"; ln -sfn "$DOT/$1" "$2"; }
 link zshrc                 "$HOME/.zshrc"
-link zpreztorc             "$HOME/.zpreztorc"
-link p10k.zsh              "$HOME/.p10k.zsh"
+link zprofile              "$HOME/.zprofile"
+link starship.toml         "$HOME/.config/starship.toml"
 link tmux.conf             "$HOME/.tmux.conf"
 link vimrc                 "$HOME/.vimrc"
 link gitconfig             "$HOME/.gitconfig"
-link flake8                "$HOME/.flake8"
 link latexmkrc             "$HOME/.latexmkrc"
 link hammerspoon           "$HOME/.hammerspoon"
 link claude/settings.json  "$HOME/.claude/settings.json"
@@ -34,14 +25,17 @@ link claude/settings.json  "$HOME/.claude/settings.json"
 # iTerm2 profile (loaded as a dynamic profile)
 link iterm2/profiles.json "$HOME/Library/Application Support/iTerm2/DynamicProfiles/profiles.json"
 
+# Remove leftovers of the old prezto/p10k setup (dangling or prezto symlinks)
+for rc in zshenv zlogin zlogout zpreztorc flake8; do
+    f="$HOME/.$rc"
+    if [[ -L "$f" && ( ! -e "$f" || "$(readlink "$f")" == *zprezto* ) ]]; then
+        rm "$f"
+    fi
+done
+
 # Neovim config
 if [[ ! -d "$HOME/.config/nvim" ]]; then
     git clone git@github.com:jf87/kickstart.nvim.git "$HOME/.config/nvim"
-fi
-
-# tmux plugin manager (install plugins with prefix + I)
-if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
-    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
 
 # Python tools
@@ -58,4 +52,4 @@ if [[ ! -f "$HOME/.zshrc.local" ]]; then
     echo "Created ~/.zshrc.local - add API keys from KeePassXC."
 fi
 
-echo "Done. Next: open tmux and press prefix + I; open nvim to install plugins."
+echo "Done. Next: open nvim once to install plugins."

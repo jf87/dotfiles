@@ -1,0 +1,22 @@
+# Prompt: dir, git, python venv | right: exit status, duration, jobs
+add_newline = false
+format = "$directory$git_branch$git_status$python$character"
+right_format = "$status$cmd_duration$jobs"
+
+[directory]
+truncation_length = 4
+truncate_to_repo = false
+
+[python]
+# only show when a virtualenv is active
+detect_extensions = []
+detect_files = []
+format = '[(\($virtualenv\) )]($style)'
+
+[status]
+disabled = false
+format = '[$status]($style) '
+
+[cmd_duration]
+min_time = 3000
+format = '[$duration]($style) '

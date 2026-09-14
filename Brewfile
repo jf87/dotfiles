@@ -2,6 +2,9 @@
 # Commented entries: "maybe" - uncomment what you still need.
 
 # --- CLI ---
+brew "starship"                 # prompt
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
 brew "git"
 brew "git-lfs"
 brew "neovim"
