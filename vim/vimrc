@@ -56,6 +56,7 @@
     " }
     " Code Completion {
       Plug 'neoclide/coc.nvim', {'branch': 'release'}
+      Plug 'github/copilot.vim',
     " }
     "
     " Writing {
@@ -83,7 +84,7 @@
 
     " General Programming {
         "Git wrapper
-        "Plug 'tpope/vim-fugitive'
+        Plug 'tpope/vim-fugitive'
         " comment/uncomment
         Plug 'scrooloose/nerdcommenter'
         "line up text, must come before markdown plugin
@@ -265,6 +266,9 @@
     nmap <Leader>ff [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
 " }
 "
+" RenderCV
+  nnoremap <localleader>lc :!rendercv render %<CR>
+
 "
 " Plugins-Settings {
 "
@@ -341,16 +345,32 @@
 
 " undotree {
         nnoremap <F5> :UndotreeToggle<cr>
-"}
+"} 
+"" Fugitive {
+        if isdirectory(expand("~/.config/nvim/plugged/vim-fugitive/"))
+            nnoremap <silent> <leader>gs :Git<CR>
+            nnoremap <silent> <leader>gd :Gdiff<CR>
+            nnoremap <silent> <leader>gc :Git commit<CR>
+            nnoremap <silent> <leader>gb :Gblame<CR>
+            nnoremap <silent> <leader>gl :Glog<CR>
+            nnoremap <silent> <leader>gp :Git push<CR>
+            nnoremap <silent> <leader>gr :Gread<CR>
+            nnoremap <silent> <leader>gw :Gwrite<CR>
+            nnoremap <silent> <leader>ge :Gedit<CR>
+            " Mnemonic _i_nteractive
+            nnoremap <silent> <leader>gi :Git add -p %<CR>
+            nnoremap <silent> <leader>gg :SignifyToggle<CR>
+        endif
+    "}
 
 "
 "" misc
     " {
         " Right wrapping behavior for text like files
-        au BufRead,BufNewFile *.txt,*.tex,*.md,*.wiki,*.slide set wrap linebreak nolist textwidth=0 wrapmargin=0
+        au BufRead,BufNewFile *.txt,*.tex,*.md,*.wiki,*.slide,*.yaml set wrap linebreak nolist textwidth=0 wrapmargin=0
 
         " Enable spell checker for text like files
-        au BufRead *.txt,*.tex,*.md,*.wiki,*.slide setlocal spelllang=en_us,de_de
+        au BufRead *.txt,*.tex,*.md,*.wiki,*.slide,*.yaml setlocal spelllang=en_us,de_de
         " Vertical line at 88 char to follow PEP (black adapted)
         if exists('+colorcolumn')
           set colorcolumn=88
@@ -376,13 +396,13 @@
 " VimWiki
 " {
     let g:vimwiki_list = [{
-                    \ 'path': '~/Drive/sync/VimWiki',
+                    \ 'path': '/Users/jofu/Library/CloudStorage/OneDrive-ZHAW',
                     \ 'syntax': 'markdown', 'ext': '.md',
-                    \ 'path_html': '~/Drive/sync/VimWiki/html',
+                    \ 'path_html': '/Users/jofu/Library/CloudStorage/OneDrive-ZHAW/html',
                     \ 'custom_wiki2html': '~/dotfiles/vim/convert.py',
                     \ 'nested_syntaxes' : {'python': 'python', 'c++': 'cpp'}
                     \ }]
-    au BufNewFile ~/Drive/sync/VimWiki/diary/*.md :silent 0r !~/dotfiles/vim/generate-vimwiki-diary-template.py '%' ~/Drive/sync/vimwiki
+    au BufNewFile /Users/jofu/Library/CloudStorage/OneDrive-ZHAW/diary/*.md :silent 0r !~/dotfiles/vim/generate-vimwiki-diary-template.py '%' /Users/jofu/Library/CloudStorage/OneDrive-ZHAW
 
     " disable table mappings
     let g:vimwiki_key_mappings = {
@@ -466,6 +486,8 @@
           let g:vimtex_quickfix_ignore_filters = [
                     \ 'Overwriting file',
                     \ 'Marginpar on page',
+                    \ 'Missing "publisher"',
+                    \ 'Missing "address"'
           \]
         " proper minted environemt syntax
         let g:vimtex_syntax_minted = [
@@ -680,7 +702,7 @@
     " {
         if OSX()
             " use leader d to look up in mac os dictionary
-            nmap <silent> <Leader>d :!open dict://<cword><CR><CR>
+            nmap <silent> <Leader>dd :!open dict://<cword><CR><CR>
         endif
 
         " Latex spell checking
@@ -694,6 +716,43 @@
         " present filetype from golang .slide format
         autocmd BufNewFile,BufRead *.slide set filetype=present
         let g:NERDCustomDelimiters = { 'present': { 'left': '# ','right': '' } }
+
+
+" Function to convert current file to PDF using Pandoc and open Finder
+function! MarkdownToPDF()
+    " Get the current file path
+    let current_file = expand('%:p')
+    " Get the directory of the current file
+    let current_dir = expand('%:p:h')
+    " Create the output PDF file path
+    let pdf_file = expand('%:p:r') . '.pdf'
+    " Construct the Pandoc command
+    let pandoc_cmd = 'pandoc -f markdown -t pdf "' . current_file . '" -o "' . pdf_file . '"'
+    
+    " Execute the Pandoc command
+    let output = system(pandoc_cmd)
+    
+    " Check if the command was successful
+    if v:shell_error == 0
+        echo "PDF created successfully: " . pdf_file
+        " Open Finder in the current directory
+        call system('open ' . shellescape(current_dir))
+    else
+        echoerr "Error creating PDF: " . output
+    endif
+endfunction
+
+" Map the function to a key combination (e.g., <leader>p)
+nnoremap <leader>p :call MarkdownToPDF()<CR>
+
+
+" nnoremap <Leader>d. :call DeleteFileAndCloseBuffer()
+nnoremap <C-Del> :call DeleteFileAndCloseBuffer()
+fun! DeleteFileAndCloseBuffer()
+  let choice = confirm("Delete file and close buffer?", "&Do it!\n&Nonono", 1)
+  if choice == 1 | call delete(expand('%:p')) | q! | endif
+endfun
+
 
 " lualine {
 lua << END
