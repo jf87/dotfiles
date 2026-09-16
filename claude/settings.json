@@ -1,8 +1,9 @@
 {
-  "model": "opus",
+  "model": "opus[1m]",
   "enabledPlugins": {
     "document-skills@anthropic-agent-skills": true
   },
   "effortLevel": "high",
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "theme": "dark"
 }
