@@ -2,6 +2,12 @@ hyper = require('hyper')
 local hypermod = {"cmd"}
 
 ------------------------
+-- Jamf admin request
+------------------------
+local jamf = require('jamf')
+hyper:bind({''}, 'e', jamf.request)
+
+------------------------
 -- Reload
 ------------------------
 
