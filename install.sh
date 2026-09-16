@@ -25,6 +25,8 @@ link claude/settings.json  "$HOME/.claude/settings.json"
 
 # iTerm2 profile (loaded as a dynamic profile)
 link iterm2/profiles.json "$HOME/Library/Application Support/iTerm2/DynamicProfiles/profiles.json"
+# Make it the default profile (iTerm must not be running, or it overwrites this on quit)
+defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "5967553B-825A-4D2F-96F7-06AB09FEA17C"
 
 # Remove leftovers of the old prezto/p10k setup (dangling or prezto symlinks)
 for rc in zshenv zlogin zlogout zpreztorc flake8; do
@@ -48,6 +50,7 @@ if [[ ! -x "$HOME/.local/bin/claude" ]]; then
 fi
 
 # Caps Lock -> F18 (hyper key for Hammerspoon)
+mkdir -p "$HOME/Library/LaunchAgents"
 cp "$DOT/com.local.KeyRemapping.plist" "$HOME/Library/LaunchAgents/"
 launchctl unload "$HOME/Library/LaunchAgents/com.local.KeyRemapping.plist" 2>/dev/null || true
 launchctl load "$HOME/Library/LaunchAgents/com.local.KeyRemapping.plist"
