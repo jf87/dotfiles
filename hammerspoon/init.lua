@@ -1,3 +1,5 @@
+require("hs.ipc")
+
 hyper = require('hyper')
 
 ------------------------

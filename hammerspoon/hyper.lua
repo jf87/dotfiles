@@ -7,6 +7,11 @@
 local hyper = hs.hotkey.modal.new({}, nil)
 
 local function enterHyperMode()
+  -- Secure Input (e.g. a KeePassXC unlock field) blocks the modal's
+  -- unmodified letter hotkeys; F18 itself still gets through.
+  if hs.eventtap.isSecureInputEnabled() then
+    hs.alert.show("Secure Input is on (KeePassXC?) – hyper keys blocked")
+  end
   hyper.triggered = false
   hyper:enter()
 end
