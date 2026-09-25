@@ -10,7 +10,7 @@ Neovim config lives in [jf87/kickstart.nvim](https://github.com/jf87/kickstart.n
 3. `git clone git@github.com:jf87/dotfiles ~/dotfiles && ~/dotfiles/install.sh`
 4. Put API keys (from KeePassXC) into `~/.zshrc.local`. Never commit secrets: this repo is public.
 5. nvim: start once to let Lazy and Mason install everything.
-6. iTerm2: Settings → Profiles → set "Default" (dynamic profile) as default.
+6. iTerm2: Settings → Profiles → set "Dotfiles" (dynamic profile) as default.
 7. Raycast: Settings → Advanced → Import the `.rayconfig` export.
 8. Hammerspoon: grant Accessibility access, enable launch at login.
 
