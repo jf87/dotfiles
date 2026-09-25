@@ -56,3 +56,8 @@ BREW="${HOMEBREW_PREFIX:-/opt/homebrew}"
 (( $+commands[starship] )) && eval "$(starship init zsh)"
 [[ ! -f $BREW/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] || source $BREW/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 [[ ! -f $BREW/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] || source $BREW/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/fues/.docker/completions $fpath)
+autoload -Uz compinit
+(( ${+_comps[docker]} )) || compinit
+# End of Docker CLI completions
