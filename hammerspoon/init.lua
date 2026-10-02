@@ -9,6 +9,12 @@ local jamf = require('jamf')
 hyper:bind({''}, 'e', jamf.request)
 
 ------------------------
+-- Display arrangement (normal <-> recording)
+------------------------
+local displays = require('displays')
+hyper:bind({''}, 'r', displays.toggle)
+
+------------------------
 -- Reload
 ------------------------
 local function reloadConfig()
