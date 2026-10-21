@@ -6,6 +6,16 @@
 
 local hyper = hs.hotkey.modal.new({}, nil)
 
+-- Mark the modal as used whenever a binding fires, so releasing F18
+-- afterwards doesn't also send Escape.
+local modalBind = hyper.bind
+function hyper:bind(mods, key, fn)
+  return modalBind(self, mods, key, function()
+    self.triggered = true
+    fn()
+  end)
+end
+
 local function enterHyperMode()
   -- Secure Input (e.g. a KeePassXC unlock field) blocks the modal's
   -- unmodified letter hotkeys; F18 itself still gets through.
